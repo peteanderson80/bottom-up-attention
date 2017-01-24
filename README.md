@@ -1,7 +1,9 @@
-# py-R-FCN
+# py-R-FCN-multiGPU
 R-FCN: Object Detection via Region-based Fully Convolutional Networks
 
 py-R-FCN now supports both joint training and alternative optimization. 
+
+py-R-FCN-multiGPU supports multiGPU training of detectors like faster-rcnn and py-R-FCN
 
 ### Disclaimer
 
@@ -16,7 +18,7 @@ There are slight differences between py-R-FCN and the official R-FCN implementat
 ### Multi-GPU Training
 python ./tools/train_net_multi_gpu.py --gpu 0,1 --solver models/pascal_voc/ResNet-101/rfcn_end2end/solver_ohem.prototxt --weights data/imagenet_models/ResNet-101-model.caffemodel  --imdb  voc_2007_trainval+voc_2012_trainval --iters 110000 --cfg experiments/cfgs/rfcn_end2end_ohem.yml
 
-This will use 2 GPUs to perform training. I have set iter_size to 1, so in this case, which is using 2 GPUs, results should be similar.
+This will use 2 GPUs to perform training. I have set iter_size to 1, so in this case, which is using 2 GPUs, results should be similar. Note that as more GPUs are added, batch size will increase, as it happens in the default multiGPU training in Caffe.
 
 #### Some modification
 
@@ -49,7 +51,7 @@ If you find R-FCN useful in your research, please consider citing:
     
 
 
-0. **`Important`** Please use the version of caffe uploaded with this repository. I have merged many file between the latest version of caffe and py-R-FCN.
+0. **`Important`** Please use the version of caffe uploaded with this repository. I have merged many files between the latest version of Caffe and py-R-FCN.
 
 1. Requirements for `Caffe` and `pycaffe` (see: [Caffe installation instructions](http://caffe.berkeleyvision.org/installation.html))
 
@@ -60,6 +62,7 @@ If you find R-FCN useful in your research, please consider citing:
   WITH_PYTHON_LAYER := 1
   # Unrelatedly, it's also recommended that you use CUDNN
   USE_CUDNN := 1
+  USE_NCCL := 1
   ```
 2. Python packages you might not have: `cython`, `python-opencv`, `easydict`
 3. [Optional] MATLAB is required for **official** PASCAL VOC evaluation only. The code now includes unofficial Python evaluation code.
