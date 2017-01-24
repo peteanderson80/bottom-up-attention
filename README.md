@@ -75,19 +75,7 @@ Any NVIDIA GPU with 6GB or larger memory is OK(4GB is enough for ResNet-50).
 ### Installation
 1. Clone the R-FCN repository
   ```Shell
-  git clone https://github.com/Orpine/py-R-FCN.git
-  ```
-  We'll call the directory that you cloned R-FCN into `RFCN_ROOT`
-
-2. Clone the Caffe repository
-  ```Shell
-  cd $RFCN_ROOT
-  git clone https://github.com/Microsoft/caffe.git
-  ```
-  [optional] 
-  ```Shell
-  cd caffe
-  git reset --hard 1a2be8e
+  git clone --recursive https://github.com/bharatsingh430/py-R-FCN-multiGPU/
   ```
   (I only test on this commit, and I'm not sure whether this Caffe is still compatible with the prototxt in this repository in the future)
   
