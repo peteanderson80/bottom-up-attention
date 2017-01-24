@@ -12,6 +12,11 @@ py-R-FCN is modified from [the offcial R-FCN implementation](https://github.com/
 There are slight differences between py-R-FCN and the official R-FCN implementation.
  - py-R-FCN is ~10% slower at test-time, because some operations execute on the CPU in Python layers (e.g., 90ms / image vs. 99ms / image for ResNet-50)
  - py-R-FCN supports both join training and alternative optimization of R-FCN.
+ 
+### Multi-GPU Training
+python ./tools/train_net_multi_gpu.py --gpu 0,1 --solver models/pascal_voc/ResNet-101/rfcn_end2end/solver_ohem.prototxt --weights data/imagenet_models/ResNet-101-model.caffemodel  --imdb  voc_2007_trainval+voc_2012_trainval --iters 110000 --cfg experiments/cfgs/rfcn_end2end_ohem.yml
+
+This will use 2 GPUs to perform training. I have set iter_size to 1, so in this case, which is using 2 GPUs, results should be similar.
 
 #### Some modification
 
@@ -42,28 +47,9 @@ If you find R-FCN useful in your research, please consider citing:
         Year = {2016}
     }
     
-### Main Results
 
-#### joint training
-                   | training data       | test data             | mAP@0.5   | time/img (Titian X)
--------------------|:-------------------:|:---------------------:|:-----:|:------------------:|
-R-FCN, ResNet-50  | VOC 07+12 trainval  | VOC 07 test           | 77.6% | 0.099sec            |
-R-FCN, ResNet-101 | VOC 07+12 trainval  | VOC 07 test           | 79.4% | 0.136sec            |
 
-                   | training data       | test data             | mAP@[0.5:0.95]   | time/img (Titian X)
--------------------|:-------------------:|:---------------------:|:-----:|:------------------:|
-R-FCN, ResNet-101  | COCO 2014 train     | COCO 2014 val         | 29.0% | 0.0138sec          |
-
-#### alternative optimization
-
-                   | training data       | test data             | mAP@0.5   | time/img (Titian X)
--------------------|:-------------------:|:---------------------:|:-----:|:------------------:|
-R-FCN, ResNet-50  | VOC 07+12 trainval  | VOC 07 test           | 77.4%| 0.099sec            |
-R-FCN, ResNet-101 | VOC 07+12 trainval  | VOC 07 test           | 79.4%| 0.136sec           |
-
-### Requirements: software
-
-0. **`Important`** Please use the [Microsoft-version Caffe(@commit 1a2be8e)](https://github.com/Microsoft/caffe/tree/1a2be8ecf9ba318d516d79187845e90ac6e73197), this Caffe supports R-FCN layer, and the prototxt in this repository follows the Microsoft-version Caffe's layer name. You need to put the Caffe root folder under py-R-FCN folder, just like what py-faster-rcnn does.
+0. **`Important`** Please use the version of caffe uploaded with this repository. I have merged many file between the latest version of caffe and py-R-FCN.
 
 1. Requirements for `Caffe` and `pycaffe` (see: [Caffe installation instructions](http://caffe.berkeleyvision.org/installation.html))
 
