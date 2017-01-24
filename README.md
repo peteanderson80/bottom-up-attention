@@ -65,7 +65,8 @@ If you find R-FCN useful in your research, please consider citing:
   USE_NCCL := 1
   ```
 2. Python packages you might not have: `cython`, `python-opencv`, `easydict`
-3. [Optional] MATLAB is required for **official** PASCAL VOC evaluation only. The code now includes unofficial Python evaluation code.
+3. Nvidia's NCCL library which is used for multi-GPU training https://github.com/NVIDIA/nccl
+4. [Optional] MATLAB is required for **official** PASCAL VOC evaluation only. The code now includes unofficial Python evaluation code.
 
 ### Requirements: hardware
 
