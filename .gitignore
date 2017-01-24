@@ -20,6 +20,8 @@
 *.pb.cc
 *_pb2.py
 
+*.tgz
+
 # Compiled python
 *.pyc
 
