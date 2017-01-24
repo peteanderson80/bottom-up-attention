@@ -21,6 +21,7 @@ class RoIDataLayer(caffe.Layer):
     """Fast R-CNN data layer used for training."""
 
     def _shuffle_roidb_inds(self, gpu_id):
+        self.gpu_id = gpu_id
         """Randomly permute the training roidb."""
         if cfg.TRAIN.ASPECT_GROUPING:
             widths = np.array([r['width'] for r in self._roidb])
@@ -44,7 +45,7 @@ class RoIDataLayer(caffe.Layer):
     def _get_next_minibatch_inds(self):
         """Return the roidb indices for the next minibatch."""
         if self._cur + cfg.TRAIN.IMS_PER_BATCH >= len(self._roidb):
-            self._shuffle_roidb_inds()
+            self._shuffle_roidb_inds(self.gpu_id)
 
         db_inds = self._perm[self._cur:self._cur + cfg.TRAIN.IMS_PER_BATCH]
         self._cur += cfg.TRAIN.IMS_PER_BATCH
@@ -71,7 +72,7 @@ class RoIDataLayer(caffe.Layer):
             self._blob_queue = Queue(10)
             self._prefetch_process = BlobFetcher(self._blob_queue,
                                                  self._roidb,
-                                                 self._num_classes)
+                                                 self._num_classes, gpu_id)
             self._prefetch_process.start()
             # Terminate the child process when the parent exists
             def cleanup():
@@ -166,16 +167,16 @@ class RoIDataLayer(caffe.Layer):
 
 class BlobFetcher(Process):
     """Experimental class for prefetching blobs in a separate process."""
-    def __init__(self, queue, roidb, num_classes):
+    def __init__(self, queue, roidb, num_classes, gpu_id):
         super(BlobFetcher, self).__init__()
         self._queue = queue
         self._roidb = roidb
         self._num_classes = num_classes
         self._perm = None
         self._cur = 0
+        self.gpu_id = gpu_id
+        np.random.seed(gpu_id)
         self._shuffle_roidb_inds()
-        # fix the random seed for reproducibility
-        np.random.seed(cfg.RNG_SEED)
 
     def _shuffle_roidb_inds(self):
         """Randomly permute the training roidb."""
