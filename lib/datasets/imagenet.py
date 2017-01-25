@@ -80,6 +80,12 @@ class imagenet(imdb):
         assert os.path.exists(image_path), 'path does not exist: {}'.format(image_path)
         return image_path
 
+    def imwidth(self, i):
+        return self._sizes[i][0]
+
+    def imheight(self, i):
+        return self._sizes[i][1]
+
     def _load_image_set_index(self):
         """
         Load the indexes listed in this dataset's image set file.
@@ -88,7 +94,7 @@ class imagenet(imdb):
         # self._data_path + /ImageSets/val.txt
 
         if self._image_set == 'train':
-            image_set_file = os.path.join(self._data_path, 'ImageSets', 'trainr.txt')
+            image_set_file = os.path.join(self._data_path, 'ImageSets', 'trainf.txt')
             image_index = []
             if os.path.exists(image_set_file):
                 f = open(image_set_file, 'r')
@@ -109,7 +115,9 @@ class imagenet(imdb):
                         image_list = os.popen('ls ' + self._data_path + '/Data/train/' + line + '/*.JPEG').read().split()
                         tmp_list = []
                         for imgs in image_list:
-                            tmp_list.append(imgs[:-5])
+                            img = imgs.split('/')
+                            img = img[-3] + '/' + img[-2] + '/' + img[-1][:-5]
+                            tmp_list.append(img)
                         vtmp_index = vtmp_index + tmp_list
 
                 num_lines = len(vtmp_index)
@@ -130,7 +138,7 @@ class imagenet(imdb):
                     while count < 2000:
                         image_index.append(tmp_index[ids[count % num_lines]])
                         count = count + 1
-            image_set_file = os.path.join(self._data_path, 'ImageSets', 'trainr.txt')
+            image_set_file = os.path.join(self._data_path, 'ImageSets', 'trainf.txt')
             f = open(image_set_file, 'w')
             for lines in image_index:
                 f.write(lines + '\n')
@@ -176,6 +184,11 @@ class imagenet(imdb):
             data = minidom.parseString(f.read())
 
         objs = data.getElementsByTagName('object')
+        imsize = data.getElementsByTagName('size')
+        width = float(get_data_from_tag(imsize[0], 'width'))
+        height = float(get_data_from_tag(imsize[0], 'height'))
+
+
         num_objs = len(objs)
 
         boxes = np.zeros((num_objs, 4), dtype=np.uint16)
@@ -183,23 +196,29 @@ class imagenet(imdb):
         overlaps = np.zeros((num_objs, self.num_classes), dtype=np.float32)
 
         # Load object bounding boxes into a data frame.
+        count = 0
         for ix, obj in enumerate(objs):
-            x1 = float(get_data_from_tag(obj, 'xmin'))
-            y1 = float(get_data_from_tag(obj, 'ymin'))
-            x2 = float(get_data_from_tag(obj, 'xmax'))
-            y2 = float(get_data_from_tag(obj, 'ymax'))
-            cls = self._wnid_to_ind[
-                    str(get_data_from_tag(obj, "name")).lower().strip()]
-            boxes[ix, :] = [x1, y1, x2, y2]
-            gt_classes[ix] = cls
-            overlaps[ix, cls] = 1.0
+            x1 = float(get_data_from_tag(obj, 'xmin')) - 1
+            y1 = float(get_data_from_tag(obj, 'ymin')) - 1
+            x2 = float(get_data_from_tag(obj, 'xmax')) - 1
+            y2 = float(get_data_from_tag(obj, 'ymax')) - 1
+            cls_tag = str(get_data_from_tag(obj, "name")).lower().strip()
+            if self._valid_image_flag[self._wnid_to_ind_image[cls_tag]] == 0:
+                continue
+            cls = self._wnid_to_ind[cls_tag]
+            boxes[count, :] = [x1, y1, x2, y2]
+            gt_classes[count] = cls
+            overlaps[count, cls] = 1.0
+            count = count + 1
 
         overlaps = scipy.sparse.csr_matrix(overlaps)
 
         return {'boxes' : boxes,
                 'gt_classes': gt_classes,
                 'gt_overlaps' : overlaps,
-                'flipped' : False}
+                'flipped' : False,
+                'width': width,
+                'height': height}
 
 if __name__ == '__main__':
     d = datasets.imagenet('val', '')
