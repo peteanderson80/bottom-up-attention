@@ -11,6 +11,7 @@ __sets = {}
 
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
+from datasets.imagenet import imagenet
 import numpy as np
 
 # Set up voc_<year>_<split> using selective search "fast" mode
@@ -19,6 +20,13 @@ for year in ['2007', '2012', '0712']:
         name = 'voc_{}_{}'.format(year, split)
         __sets[name] = (lambda split=split, year=year: pascal_voc(split, year))
 
+for split in ['train', 'val']:
+    name = 'imagenet_{}'.format(split)
+    devkit_path = '/home/bharat/vulcan/ILSVRC/devkit/'
+    data_path = '/home/bharat/vulcan/ILSVRC2015/'
+    __sets[name] = (lambda split=split, devkit_path=devkit_path, data_path=data_path: imagenet(split, devkit_path, data_path))
+    print name
+    print __sets[name]
 
 # Set up coco_2014_<split>
 for year in ['2014']:
