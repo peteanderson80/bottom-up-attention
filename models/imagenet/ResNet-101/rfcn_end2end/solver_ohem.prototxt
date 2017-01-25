@@ -1,4 +1,4 @@
-train_net: "models/pascal_voc/ResNet-101/rfcn_end2end/train_agnostic_ohem.prototxt"
+train_net: "models/imagenet/ResNet-101/rfcn_end2end/train_agnostic_ohem.prototxt"
 base_lr: 0.001
 lr_policy: "step"
 gamma: 0.1
