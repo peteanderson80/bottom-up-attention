@@ -13,9 +13,9 @@ set -e
 export PYTHONUNBUFFERED="True"
 
 GPU_ID=$1
-NET=$2
+NET="ResNet-101"
 NET_lc=${NET,,}
-DATASET=$3
+DATASET=$2
 
 array=( $@ )
 len=${#array[@]}
@@ -49,7 +49,7 @@ exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
 
-time ./tools/train_net_multi_gpu.py --gpu ${GPU_ID} \
+time ./tools/train_net_multi_gpu.py --gpu 0,1 \
   --solver models/${PT_DIR}/${NET}/rfcn_end2end/solver_ohem.prototxt \
   --weights data/imagenet_models/${NET}-model.caffemodel \
   --imdb ${TRAIN_IMDB} \

@@ -22,8 +22,8 @@ for year in ['2007', '2012', '0712']:
 
 for split in ['train', 'val']:
     name = 'imagenet_{}'.format(split)
-    devkit_path = '/home/bharat/vulcan/ILSVRC/devkit/'
-    data_path = '/home/bharat/vulcan/ILSVRC2015/'
+    devkit_path = '/scratch0/ILSVRC/devkit/'
+    data_path = '/scratch0/ILSVRC2015/'
     __sets[name] = (lambda split=split, devkit_path=devkit_path, data_path=data_path: imagenet(split, devkit_path, data_path))
     print name
     print __sets[name]
