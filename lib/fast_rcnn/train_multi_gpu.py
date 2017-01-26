@@ -117,7 +117,8 @@ class SolverWrapper(object):
         filename = (self.solver_param.snapshot_prefix + infix +
                     '_iter_{:d}'.format(self.solver.iter) + '.caffemodel')
         filename = os.path.join(self.output_dir, filename)
-        net.save(str(filename))
+        if self.gpu_id == 0:
+            net.save(str(filename))
         print 'Wrote snapshot to: {:s}'.format(filename)
 
         if scale_bbox_params_faster_rcnn:
