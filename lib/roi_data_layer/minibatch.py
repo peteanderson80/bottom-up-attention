@@ -43,6 +43,7 @@ def get_minibatch(roidb, num_classes):
         blobs['im_info'] = np.array(
             [[im_blob.shape[2], im_blob.shape[3], im_scales[0]]],
             dtype=np.float32)
+        #_vis_minibatch(im_blob, gt_boxes)
     else: # not using RPN
         # Now, build the region of interest and label blobs
         rois_blob = np.zeros((0, 5), dtype=np.float32)
@@ -68,7 +69,7 @@ def get_minibatch(roidb, num_classes):
             # all_overlaps = np.hstack((all_overlaps, overlaps))
 
         # For debug visualizations
-        # _vis_minibatch(im_blob, rois_blob, labels_blob, all_overlaps)
+        _vis_minibatch(im_blob, rois_blob)
 
         blobs['rois'] = rois_blob
         blobs['labels'] = labels_blob
@@ -191,20 +192,22 @@ def _get_bbox_regression_labels(bbox_target_data, num_classes):
     return bbox_targets, bbox_inside_weights
 
 
-def _vis_minibatch(im_blob, rois_blob, labels_blob, overlaps):
+def _vis_minibatch(im_blob, rois_blob):
     """Visualize a mini-batch for debugging."""
     import matplotlib.pyplot as plt
+    labels_blob = [u'airplane', u'antelope', u'bear', u'bicycle', u'bird', u'bus', u'car', u'cattle', u'dog', u'domestic_cat', u'elephant', u'fox', u'giant_panda', u'hamster', u'horse', u'lion', u'lizard', u'monkey', u'motorcycle', u'rabbit', u'red_panda', u'sheep', u'snake', u'squirrel', u'tiger', u'train', u'turtle', u'watercraft', u'whale', u'zebra']
     for i in xrange(rois_blob.shape[0]):
         rois = rois_blob[i, :]
-        im_ind = rois[0]
-        roi = rois[1:]
+        im_ind = 0#rois[0]
+        roi = rois[:4]
+        clslb = rois[4]
         im = im_blob[im_ind, :, :, :].transpose((1, 2, 0)).copy()
         im += cfg.PIXEL_MEANS
         im = im[:, :, (2, 1, 0)]
         im = im.astype(np.uint8)
-        cls = labels_blob[i]
+        cls = labels_blob[int(clslb)-1]
         plt.imshow(im)
-        print 'class: ', cls, ' overlap: ', overlaps[i]
+        print 'class: ', cls
         plt.gca().add_patch(
             plt.Rectangle((roi[0], roi[1]), roi[2] - roi[0],
                           roi[3] - roi[1], fill=False,

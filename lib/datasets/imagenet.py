@@ -154,9 +154,12 @@ class imagenet(imdb):
         This function loads/saves from/to a cache file to speed up future calls.
         """
         cache_file = os.path.join(self.cache_path, self.name + '_gt_roidb.pkl')
-        if os.path.exists(cache_file):
+        index_file = os.path.join(self.cache_path, self.name + '_index_roidb.pkl')
+        if os.path.exists(cache_file) and os.path.exists(index_file):
             with open(cache_file, 'rb') as fid:
                 roidb = cPickle.load(fid)
+            with open(index_file, 'rb') as fid:
+                self._image_index = cPickle.load(fid)
             print '{} gt roidb loaded from {}'.format(self.name, cache_file)
             return roidb
 
@@ -173,6 +176,8 @@ class imagenet(imdb):
         self._image_index = [self._image_index[i] for i in valid_index]
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
+        with open(index_file, 'wb') as fid:
+            cPickle.dump(self._image_index, fid, cPickle.HIGHEST_PROTOCOL)
         print 'wrote gt roidb to {}'.format(cache_file)
 
         return gt_roidb
@@ -195,7 +200,6 @@ class imagenet(imdb):
         imsize = data.getElementsByTagName('size')
         width = float(get_data_from_tag(imsize[0], 'width'))
         height = float(get_data_from_tag(imsize[0], 'height'))
-
 
         num_objs = len(objs)
 

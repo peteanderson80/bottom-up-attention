@@ -100,7 +100,7 @@ class imdb(object):
               for i in xrange(self.num_images)]
 
     def append_flipped_images(self):
-        num_images = self.num_images
+        num_images = len(self.roidb)
         for i in xrange(num_images):
             boxes = self.roidb[i]['boxes'].copy()
             width = self.roidb[i]['width']

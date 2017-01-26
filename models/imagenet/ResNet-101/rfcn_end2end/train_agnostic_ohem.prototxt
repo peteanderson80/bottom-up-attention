@@ -7278,7 +7278,7 @@ layer {
    name: "annotator_detector"
    type: "BoxAnnotatorOHEM"
    box_annotator_ohem_param {
-        roi_per_img: 128
+        roi_per_img: 64
         ignore_label: -1
    }
    propagate_down: false
@@ -7335,7 +7335,7 @@ layer {
    loss_weight: 1
    loss_param {
         normalization: PRE_FIXED
-        pre_fixed_normalizer: 128
+        pre_fixed_normalizer: 64
    }
    propagate_down: true
    propagate_down: false
