@@ -161,11 +161,15 @@ class imagenet(imdb):
             return roidb
 
         gt_roidb = []
-        for index in self.image_index:
+        valid_index = []
+        count = 0
+        for index in self._image_index:
             data = self._load_imagenet_annotation(index)
             if len(data['boxes']) > 0:
                 gt_roidb.append(data)
-
+                valid_index.append(count)
+            count = count + 1
+        self._sizes = self._sizes[valid_index,:]
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
         print 'wrote gt roidb to {}'.format(cache_file)
