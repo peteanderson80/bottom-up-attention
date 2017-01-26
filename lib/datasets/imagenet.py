@@ -169,7 +169,8 @@ class imagenet(imdb):
                 gt_roidb.append(data)
                 valid_index.append(count)
             count = count + 1
-        self._image_index = self._image_index[valid_index]
+
+        self._image_index = [self._image_index[i] for i in valid_index]
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
         print 'wrote gt roidb to {}'.format(cache_file)
