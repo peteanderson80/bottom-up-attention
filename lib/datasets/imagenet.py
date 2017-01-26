@@ -106,7 +106,6 @@ class imagenet(imdb):
                 return image_index
 
             for i in range(1,31):
-                print(i)
                 image_set_file = os.path.join(self._data_path, 'ImageSets', 'train_' + str(i) + '.txt')
                 with open(image_set_file) as f:
                     tmp_index = [x.strip() for x in f.readlines()]
@@ -161,8 +160,12 @@ class imagenet(imdb):
             print '{} gt roidb loaded from {}'.format(self.name, cache_file)
             return roidb
 
-        gt_roidb = [self._load_imagenet_annotation(index)
-                    for index in self.image_index]
+        gt_roidb = []
+        for index in self.image_index:
+            data = self._load_imagenet_annotation(index)
+            if len(data['boxes']) > 0:
+                gt_roidb.append(data)
+
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
         print 'wrote gt roidb to {}'.format(cache_file)
@@ -191,25 +194,32 @@ class imagenet(imdb):
 
         num_objs = len(objs)
 
-        boxes = np.zeros((num_objs, 4), dtype=np.uint16)
+        boxes = np.zeros((num_objs, 4), dtype=np.int32)
         gt_classes = np.zeros((num_objs), dtype=np.int32)
         overlaps = np.zeros((num_objs, self.num_classes), dtype=np.float32)
 
         # Load object bounding boxes into a data frame.
-        count = 0
+        ids = []
         for ix, obj in enumerate(objs):
-            x1 = float(get_data_from_tag(obj, 'xmin')) - 1
-            y1 = float(get_data_from_tag(obj, 'ymin')) - 1
-            x2 = float(get_data_from_tag(obj, 'xmax')) - 1
-            y2 = float(get_data_from_tag(obj, 'ymax')) - 1
+            x1 = int(get_data_from_tag(obj, 'xmin'))
+            y1 = int(get_data_from_tag(obj, 'ymin'))
+            x2 = int(get_data_from_tag(obj, 'xmax'))
+            y2 = int(get_data_from_tag(obj, 'ymax'))
             cls_tag = str(get_data_from_tag(obj, "name")).lower().strip()
             if self._valid_image_flag[self._wnid_to_ind_image[cls_tag]] == 0:
                 continue
             cls = self._wnid_to_ind[cls_tag]
-            boxes[count, :] = [x1, y1, x2, y2]
-            gt_classes[count] = cls
-            overlaps[count, cls] = 1.0
-            count = count + 1
+            boxes[ix, :] = [x1, y1, x2, y2]
+            #if (x1 > 2400 and y1 > 2400 and x2 > 2400 and y2 > 2400):
+            #    print ('bulba')
+            assert (x1 < 4000 and y1 < 4000 and x2 < 4000 and y2 < 4000), 'gt roidb loaded from {}'.format(filename)
+            gt_classes[ix] = cls
+            overlaps[ix, cls] = 1.0
+            ids.append(ix)
+
+        boxes = boxes[ids,:]
+        gt_classes = gt_classes[ids]
+        overlaps = overlaps[ids, :]
 
         overlaps = scipy.sparse.csr_matrix(overlaps)
 

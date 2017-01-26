@@ -109,7 +109,16 @@ class imdb(object):
             oldx2 = boxes[:, 2].copy()
             boxes[:, 0] = width - oldx2 - 1
             boxes[:, 2] = width - oldx1 - 1
-            assert (boxes[:, 2] >= boxes[:, 0]).all()
+            zids1 = np.where(boxes[:,0] < 0)[0]
+            zids2 = np.where(boxes[:,2] < 0)[0]
+
+            if len(zids1) > 0:
+                boxes[zids1,0] = 0
+            if len(zids2) > 0:
+                boxes[zids2,2] = 0
+
+            assert (boxes[:, 2] >= boxes[:, 0]).all(), 'name of image {}'.format(self.image_path_at(i))
+            assert (boxes[:, 2] < 4000).all()
             entry = {'boxes' : boxes,
                      'gt_overlaps' : self.roidb[i]['gt_overlaps'],
                      'gt_classes' : self.roidb[i]['gt_classes'],
