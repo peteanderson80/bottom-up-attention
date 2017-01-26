@@ -23,7 +23,8 @@ def prepare_roidb(imdb):
     """
 
     roidb = imdb.roidb
-    for i in xrange(len(imdb.image_index)):
+    num_images = len(roidb)
+    for i in xrange(num_images):
         roidb[i]['image'] = imdb.image_path_at(i)
         # need gt_overlaps as a dense array for argmax
         gt_overlaps = roidb[i]['gt_overlaps'].toarray()
