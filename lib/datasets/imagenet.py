@@ -145,7 +145,7 @@ class imagenet(imdb):
         else:
             image_set_file = os.path.join(self._data_path, 'ImageSets', 'val.txt')
             with open(image_set_file) as f:
-                image_index = [x.strip() for x in f.readlines()]
+                image_index = [x.strip().split(' ')[0] for x in f.readlines()]
         return image_index
 
     def gt_roidb(self):
@@ -238,6 +238,50 @@ class imagenet(imdb):
                 'flipped' : False,
                 'width': width,
                 'height': height}
+
+    def _write_imagenet_results_file(self, all_boxes):
+        path = os.path.join(self._devkit_path, 'evaluation')
+        filename = path + '/demo.minival.pred.vid.txt'
+        with open(filename, 'wt') as f:
+            for im_ind, index in enumerate(self.image_index):
+                for cls_ind, cls in enumerate(self.classes):
+                    if cls == '__background__':
+                        continue
+                    dets = all_boxes[cls_ind][im_ind]
+                    if dets == []:
+                        continue
+                    for k in xrange(dets.shape[0]):
+                        f.write('{:d} {:d} {:d} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.
+                                format(im_ind + 1, cls_ind, -1, dets[k, -1],
+                                    dets[k, 0] + 1, dets[k, 1] + 1,
+                                    dets[k, 2] + 1, dets[k, 3] + 1))
+
+    def _do_matlab_eval(self):
+        eval_path = os.path.join(self._devkit_path, 'evaluation')
+        gt_path = os.path.join(self._data_path, 'Annotations', 'val')
+        pred_file = eval_path + '/demo.minival.pred.vid.txt'
+        meta_file = eval_path + '/../data/meta_vid.mat'
+        eval_file = self._data_path + '/ImageSets/minival.txt'
+
+        cmd = 'cd {} && '.format(eval_path)
+        cmd += '{:s} -nodisplay -nodesktop '.format('matlab')
+        cmd += '-r "dbstop if error; '
+        cmd += 'eval_vid_detection(\'{:s}\',\'{:s}\',\'{:s}\',\'{:s}\'); quit;"' \
+               .format(pred_file, gt_path, meta_file, eval_file)
+        print('Running:\n{}'.format(cmd))
+        status = subprocess.call(cmd, shell=True)
+
+    def evaluate_detections(self, all_boxes, output_dir):
+        self._write_imagenet_results_file(all_boxes)
+        self._do_matlab_eval()
+
+    def competition_mode(self, on):
+        if on:
+            self.config['use_salt'] = False
+            self.config['cleanup'] = False
+        else:
+            self.config['use_salt'] = True
+            self.config['cleanup'] = True
 
 if __name__ == '__main__':
     d = datasets.imagenet('val', '')

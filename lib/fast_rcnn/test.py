@@ -237,7 +237,8 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False):
 
     # timers
     _t = {'im_detect' : Timer(), 'misc' : Timer()}
-
+    #vis = True
+    #thresh = 0.01
     if not cfg.TEST.HAS_RPN:
         roidb = imdb.roidb
 
