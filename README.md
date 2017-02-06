@@ -11,6 +11,8 @@ The official R-FCN code (written in MATLAB) is available [here](https://github.c
 
 py-R-FCN is modified from [the offcial R-FCN implementation](https://github.com/daijifeng001/R-FCN) and  [py-faster-rcnn code](https://github.com/rbgirshick/py-faster-rcnn ), and the usage is quite similar to [py-faster-rcnn](https://github.com/rbgirshick/py-faster-rcnn ).
 
+py-R-FCN-multiGPU is a modified version of [py-R-FCN](https://github.com/Orpine/py-R-FCN). I have heavily reused it's README file as it contains most of the necessary information for running this branch.
+
 There are slight differences between py-R-FCN and the official R-FCN implementation.
  - py-R-FCN is ~10% slower at test-time, because some operations execute on the CPU in Python layers (e.g., 90ms / image vs. 99ms / image for ResNet-50)
  - py-R-FCN supports both join training and alternative optimization of R-FCN.
