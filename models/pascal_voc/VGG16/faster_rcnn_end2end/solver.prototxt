@@ -13,4 +13,4 @@ weight_decay: 0.0005
 snapshot: 0
 # We still use the snapshot prefix, though
 snapshot_prefix: "vgg16_faster_rcnn"
-iter_size: 2
+iter_size: 1
