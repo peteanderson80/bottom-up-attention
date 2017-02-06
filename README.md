@@ -23,7 +23,7 @@ python ./tools/train_net_multi_gpu.py --gpu 0,1 --solver models/pascal_voc/ResNe
 ```
 or
 ```
-./experiments/scripts/fcn_end2end_ohem_multi_gpu.sh 0 pascal_voc
+./experiments/scripts/rfcn_end2end_ohem_multi_gpu.sh 0 pascal_voc
 ```
 
 ### Multi-GPU Training Faster-RCNN
