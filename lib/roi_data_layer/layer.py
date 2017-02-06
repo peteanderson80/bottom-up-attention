@@ -20,7 +20,7 @@ from multiprocessing import Process, Queue
 class RoIDataLayer(caffe.Layer):
     """Fast R-CNN data layer used for training."""
 
-    def _shuffle_roidb_inds(self, gpu_id):
+    def _shuffle_roidb_inds(self, gpu_id=0):
         self.gpu_id = gpu_id
         """Randomly permute the training roidb."""
         if cfg.TRAIN.ASPECT_GROUPING:
@@ -64,7 +64,7 @@ class RoIDataLayer(caffe.Layer):
             minibatch_db = [self._roidb[i] for i in db_inds]
             return get_minibatch(minibatch_db, self._num_classes)
 
-    def set_roidb(self, roidb, gpu_id):
+    def set_roidb(self, roidb, gpu_id=0):
         """Set the roidb to be used by this layer during training."""
         self._roidb = roidb
         self._shuffle_roidb_inds(gpu_id)
@@ -125,6 +125,7 @@ class RoIDataLayer(caffe.Layer):
                 # bbox_targets blob: R bounding-box regression targets with 4
                 # targets per class
                 num_reg_class = 2 if cfg.TRAIN.AGNOSTIC else self._num_classes
+
                 top[idx].reshape(1, num_reg_class * 4, 1, 1)
                 self._name_to_top_map['bbox_targets'] = idx
                 idx += 1
@@ -167,7 +168,7 @@ class RoIDataLayer(caffe.Layer):
 
 class BlobFetcher(Process):
     """Experimental class for prefetching blobs in a separate process."""
-    def __init__(self, queue, roidb, num_classes, gpu_id):
+    def __init__(self, queue, roidb, num_classes, gpu_id=0):
         super(BlobFetcher, self).__init__()
         self._queue = queue
         self._roidb = roidb
