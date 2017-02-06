@@ -50,7 +50,7 @@ class SolverWrapper(object):
         with open(solver_prototxt, 'rt') as f:
             pb2.text_format.Merge(f.read(), self.solver_param)
 
-        self.solver.net.layers[0].set_roidb(roidb)
+        self.solver.net.layers[0].set_roidb(roidb, cfg.GPU_ID)
 
     def snapshot(self):
         """Take a snapshot of the network after unnormalizing the learned
