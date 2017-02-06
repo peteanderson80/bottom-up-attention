@@ -15,9 +15,14 @@ There are slight differences between py-R-FCN and the official R-FCN implementat
  - py-R-FCN is ~10% slower at test-time, because some operations execute on the CPU in Python layers (e.g., 90ms / image vs. 99ms / image for ResNet-50)
  - py-R-FCN supports both join training and alternative optimization of R-FCN.
  
-### Multi-GPU Training
+### Multi-GPU Training R-FCN
 ```
 python ./tools/train_net_multi_gpu.py --gpu 0,1 --solver models/pascal_voc/ResNet-101/rfcn_end2end/solver_ohem.prototxt --weights data/imagenet_models/ResNet-101-model.caffemodel  --imdb  voc_2007_trainval+voc_2012_trainval --iters 110000 --cfg experiments/cfgs/rfcn_end2end_ohem.yml
+```
+
+### Multi-GPU Training Faster-RCNN
+```
+./experiments/scripts/faster_rcnn_end2end_multi_gpu.sh 0 VGG16 pascal_voc
 ```
 
 This will use 2 GPUs to perform training. I have set iter_size to 1, so in this case, which is using 2 GPUs, results should be similar. Note that as more GPUs are added, batch size will increase, as it happens in the default multiGPU training in Caffe.
