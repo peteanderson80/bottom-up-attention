@@ -31,7 +31,7 @@ or
 ./experiments/scripts/faster_rcnn_end2end_multi_gpu.sh 0 VGG16 pascal_voc
 ```
 
-This will use 2 GPUs to perform training. I have set iter_size to 1, so in this case, which is using 2 GPUs, results should be similar. Note that as more GPUs are added, batch size will increase, as it happens in the default multiGPU training in Caffe. The GPU_ID flag is used for testing and if you intent to use more GPUs, please edit it inside the script.
+This will use 2 GPUs to perform training. I have set iter_size to 1, so in this case, which is using 2 GPUs, results should be similar. Note that as more GPUs are added, batch size will increase, as it happens in the default multiGPU training in Caffe. The GPU_ID flag in the shell script is only used for testing and if you intent to use more GPUs, please edit it inside the script.
 
 #### Some modification
 
