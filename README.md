@@ -53,7 +53,7 @@ And I've already provided two configuration files for you(w/ OHEM and w/o OHEM) 
 -------------------|:-------------------:|:-----------------------------:|:-----:|
 R-FCN, ResNet-101  | COCO 2014 train+val -minival | COCO 2014 minival    | 31.0% |
 
-If you want to train the model, please use the coco branch of this repository. The trained model can be found [here](https://drive.google.com/open?id=0B6T5quL13CdHOUc0UmRxWEFqTEk). 
+If you want to train the model, please use the coco branch of this repository. The trained model can be found [here](https://drive.google.com/open?id=0B6T5quL13CdHOUc0UmRxWEFqTEk). Also use the config files from the coco branch for this model.
 
 ### License
 
