@@ -234,6 +234,11 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False):
                  for _ in xrange(imdb.num_classes)]
 
     output_dir = get_output_dir(imdb, net)
+    print '++++++Evaluating from stored Jason+++++'
+    # pdb.set_trace()
+    imdb.evaluate_detections2(output_dir+'_coco/detections_val2014_results_e64e37ea-2268-432d-b3d9-581abbca029b.json',output_dir)
+    return
+
 
     # timers
     _t = {'im_detect' : Timer(), 'misc' : Timer()}

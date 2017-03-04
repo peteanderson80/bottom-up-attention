@@ -24,6 +24,13 @@ class RoIDataLayer(caffe.Layer):
         self.gpu_id = gpu_id
         """Randomly permute the training roidb."""
         if cfg.TRAIN.ASPECT_GROUPING:
+            validIds = []
+            ct = 0
+            tdb = []
+            for r in self._roidb:
+                if len(r['boxes']) > 0:
+                    tdb.append(r)
+            self._roidb = tdb
             widths = np.array([r['width'] for r in self._roidb])
             heights = np.array([r['height'] for r in self._roidb])
             horz = (widths >= heights)

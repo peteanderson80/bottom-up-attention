@@ -12,7 +12,6 @@ set -e
 
 export PYTHONUNBUFFERED="True"
 
-GPU_ID=$1
 NET="ResNet-101"
 NET_lc=${NET,,}
 DATASET='coco'
@@ -61,10 +60,3 @@ time ./tools/train_net_multi_gpu.py --gpu 0,1,2,3,4,5,6,7 \
 set +x
 NET_FINAL=`tail -n 100 ${LOG} | grep -B 1 "done solving" | grep "Wrote snapshot" | awk '{print $4}'`
 set -x
-
-time ./tools/test_net.py --gpu ${GPU_ID} \
-  --def models/${PT_DIR}/${NET}/rfcn_end2end/test_agnostic.prototxt \
-  --net ${NET_FINAL} \
-  --imdb ${TEST_IMDB} \
-  --cfg experiments/cfgs/rfcn_end2end_ohem.yml \
-  ${EXTRA_ARGS}

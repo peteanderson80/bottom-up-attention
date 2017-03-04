@@ -6954,7 +6954,7 @@ layer {
   param { lr_mult: 1.0 decay_mult: 1.0 }
   param { lr_mult: 2.0 decay_mult: 0 }
   convolution_param {
-    num_output: 24   # 2(bg/fg) * 12(anchors)
+    num_output: 30   # 2(bg/fg) * 12(anchors)
     kernel_size: 1 pad: 0 stride: 1
     weight_filler { type: "gaussian" std: 0.01 }
     bias_filler { type: "constant" value: 0 }
@@ -6968,7 +6968,7 @@ layer {
   param { lr_mult: 1.0 decay_mult: 1.0 }
   param { lr_mult: 2.0 decay_mult: 0 }
   convolution_param {
-    num_output: 48   # 4 * 12(anchors)
+    num_output: 60   # 4 * 12(anchors)
     kernel_size: 1 pad: 0 stride: 1
     weight_filler { type: "gaussian" std: 0.01 }
     bias_filler { type: "constant" value: 0 }
@@ -6995,7 +6995,7 @@ layer {
   type: 'Reshape'
   bottom: 'rpn_cls_prob'
   top: 'rpn_cls_prob_reshape'
-  reshape_param { shape { dim: 0 dim: 24 dim: -1 dim: 0 } }
+  reshape_param { shape { dim: 0 dim: 30 dim: -1 dim: 0 } }
 }
 layer {
   name: 'proposal'
@@ -7007,7 +7007,7 @@ layer {
   python_param {
     module: 'rpn.proposal_layer'
     layer: 'ProposalLayer'
-    param_str: "'feat_stride': 16 \n'scales': !!python/tuple [4, 8, 16, 32]"
+    param_str: "'feat_stride': 16 \n'scales': !!python/tuple [2, 4, 8, 16, 32]"
   }
 }
 

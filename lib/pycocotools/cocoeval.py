@@ -420,7 +420,7 @@ class COCOeval:
         self.stats[5] = _summarize(1,areaRng='large')
         self.stats[6] = _summarize(0,maxDets=1)
         self.stats[7] = _summarize(0,maxDets=10)
-        self.stats[8] = _summarize(0,maxDets=100)
+        self.stats[8] = _summarize(0,maxDets=300)# was 100 #Nav
         self.stats[9]  = _summarize(0,areaRng='small')
         self.stats[10] = _summarize(0,areaRng='medium')
         self.stats[11] = _summarize(0,areaRng='large')
@@ -438,7 +438,7 @@ class Params:
         # np.arange causes trouble.  the data point on arange is slightly larger than the true value
         self.iouThrs = np.linspace(.5, 0.95, np.round((0.95-.5)/.05)+1, endpoint=True)
         self.recThrs = np.linspace(.0, 1.00, np.round((1.00-.0)/.01)+1, endpoint=True)
-        self.maxDets = [1,10,100]
+        self.maxDets = [1,10,300]# was [1,10,100] # Nav
         self.areaRng = [ [0**2,1e5**2], [0**2, 32**2], [32**2, 96**2], [96**2, 1e5**2] ]
         self.useSegm = 0
         self.useCats = 1

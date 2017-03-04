@@ -237,8 +237,7 @@ class coco(imdb):
             print '{} gt roidb loaded from {}'.format(self.name, cache_file)
             return roidb
 
-        gt_roidb = [self._load_coco_annotation(index)
-                    for index in self._image_index]
+        gt_roidb = [self._load_coco_annotation(index) for index in self._image_index]
 
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
@@ -398,6 +397,15 @@ class coco(imdb):
             res_file += '_{}'.format(str(uuid.uuid4()))
         res_file += '.json'
         self._write_coco_results_file(all_boxes, res_file)
+        # Only do evaluation on non-test sets
+        if self._image_set.find('test') == -1:
+            self._do_detection_eval(res_file, output_dir)
+        # Optionally cleanup results json file
+        if self.config['cleanup']:
+            os.remove(res_file)
+	
+    def evaluate_detections2(self,res_file, output_dir):
+        print '++++ in evaluate_detections2++++'
         # Only do evaluation on non-test sets
         if self._image_set.find('test') == -1:
             self._do_detection_eval(res_file, output_dir)

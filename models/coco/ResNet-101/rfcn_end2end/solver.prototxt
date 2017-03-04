@@ -1,5 +1,5 @@
 train_net: "models/coco/ResNet-101/rfcn_end2end/train_agnostic.prototxt"
-base_lr: 0.001
+base_lr: 0.00075
 lr_policy: "step"
 gamma: 0.1
 stepsize: 640000
