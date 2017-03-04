@@ -47,6 +47,14 @@ In conclusion:
 
 And I've already provided two configuration files for you(w/ OHEM and w/o OHEM) under `experiments/cfgs` folder, you could just use them and needn't change anything.
 
+#### Results on MS-COCO
+
+                   | training data       | test data          | mAP@[0.5:0.95]   | 
+-------------------|:-------------------:|:-----------------------------:|:-----:|
+R-FCN, ResNet-101  | COCO 2014 train+val -minival | COCO 2014 minival    | 31.0% |
+
+If you want to train the model, please use the coco branch of this repository. The trained model can be found [here](https://drive.google.com/open?id=0B6T5quL13CdHOUc0UmRxWEFqTEk). 
+
 ### License
 
 R-FCN is released under the MIT License (refer to the LICENSE file for details).
