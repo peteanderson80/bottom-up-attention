@@ -54,7 +54,7 @@ m and needn't change anything.
 -------------------|:-------------------:|:-----------------------------:|:-----:|
 R-FCN, ResNet-101  | COCO 2014 train+val -minival | COCO 2014 minival    | 30.8% |
 
-If you want to train the model, please use the coco branch of this repository. The trained model can be found [here](https://drive.google.com/open?id=0B6T5quL13CdHOUc0UmRxWEFqTEk). Use the config files from the coco branch for this model.
+If you want to train the model, please use the coco branch of this repository. The trained model can be found [here](https://drive.google.com/open?id=0B6T5quL13CdHOUc0UmRxWEFqTEk). Use the config files from the coco branch for this model. Multi-scale training or testing was not done for obtaining this number. Image size was set to 800 and max size was 1200. This alone obtains 1.6% better than what was reported in the original paper. Training was done on 8 GPUs, with an iter_size of 2.
 
 ### License
 
