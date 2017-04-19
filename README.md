@@ -5,6 +5,8 @@ py-R-FCN now supports both joint training and alternative optimization.
 
 py-R-FCN-multiGPU supports multiGPU training of detectors like faster-rcnn and py-R-FCN
 
+# Soft-NMS repository gets better results on COCO, so please refer to it.
+
 ### Disclaimer
 
 The official R-FCN code (written in MATLAB) is available [here](https://github.com/daijifeng001/R-FCN).
