@@ -16,6 +16,7 @@ import os
 
 from caffe.proto import caffe_pb2
 import google.protobuf as pb2
+import google.protobuf.text_format as text_format
 
 class SolverWrapper(object):
     """A simple wrapper around Caffe's solver.
@@ -48,7 +49,7 @@ class SolverWrapper(object):
 
         self.solver_param = caffe_pb2.SolverParameter()
         with open(solver_prototxt, 'rt') as f:
-            pb2.text_format.Merge(f.read(), self.solver_param)
+            text_format.Merge(f.read(), self.solver_param)
 
         self.solver.net.layers[0].set_roidb(roidb, cfg.GPU_ID)
 

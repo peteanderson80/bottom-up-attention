@@ -14,6 +14,7 @@ import os
 
 from caffe.proto import caffe_pb2
 import google.protobuf as pb2
+import google.protobuf.text_format
 from multiprocessing import Process
 
 class SolverWrapper(object):
@@ -136,9 +137,34 @@ class SolverWrapper(object):
 
         return filename
 
+    def track_memory(self):
+        net = self.solver.net
+        print 'Memory Usage:'
+        total = 0.0
+        data = 0.0
+        params = 0.0
+        for k,v in net.blobs.iteritems():
+            gb = float(v.data.nbytes)/1024/1024/1024
+            print '%s : %.3f GB %s' % (k,gb,v.data.shape)
+            total += gb
+            data += gb
+        print 'Memory Usage: Data %.3f GB' % data
+        for k,v in net.params.iteritems():
+            for i,p in enumerate(v):
+                gb = float(p.data.nbytes)/1024/1024/1024
+                total += gb
+                params += gb
+                print '%s[%d] : %.3f GB %s' % (k,i,gb,p.data.shape)
+        print 'Memory Usage: Params %.3f GB' % params
+        print 'Memory Usage: Total %.3f GB' % total
+        
     def getSolver(self):
         return self.solver
 
+
+
+    
+        
 def solve(proto, roidb, pretrained_model, gpus, uid, rank, output_dir, max_iter):
     caffe.set_mode_gpu()
     caffe.set_device(gpus[rank])
@@ -157,9 +183,11 @@ def solve(proto, roidb, pretrained_model, gpus, uid, rank, output_dir, max_iter)
         solver.net.after_backward(nccl)
     count = 0
     while count < max_iter:
+        print 'Solver step'
         solver.step(cfg.TRAIN.SNAPSHOT_ITERS)
         if rank == 0:
             solverW.snapshot()
+            #solverW.track_memory()
         count = count + cfg.TRAIN.SNAPSHOT_ITERS
 
 def get_training_roidb(imdb):

@@ -1,0 +1,20 @@
+on,on top of,on a,sitting on,on side of,are on,attached to,standing on,walking on,laying on
+has,has a,have
+in,in a,inside,standing in,are in,inside of,sitting in
+wearing,wears,wearing a,is wearing a
+behind,behind a,is behind,are behind,behind an
+holding,carrying,carrying a,carrying an,are carrying,holds,holding an,holds a,holding on to,holding onto a
+near,next to,by,at,around,beside
+below,under
+above,over,hanging over,hanging above
+in front of,in front of a,in front
+riding,riding a,riding on,is riding,riding in
+hanging on,hanging from,hanging off,hanging in,hanging on a,are hanging on
+eating,eating a,are eating,eats,grazing,grazing on
+against,leaning on,leaning against,leaning on a,leaning against a
+looking at,watching,are watching,looking at,looking in
+left of,to left of,left,on left side of,on left of
+right of,to right of,right,on right side of,on right of
+made of,made from,made with,made out of,are made of
+drinking,drinking from,drinks,drinking out of,drinks from,drink,drinking a,drink from
+swimming in, swimming,swims in

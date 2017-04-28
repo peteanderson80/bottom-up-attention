@@ -1,121 +1,94 @@
-# py-R-FCN-multiGPU
-R-FCN: Object Detection via Region-based Fully Convolutional Networks
+# bottom-up-attention
 
-py-R-FCN now supports both joint training and alternative optimization. 
+This code implements a bottom-up attention model, based on multi-gpu training of Faster R-CNN with ResNet-101, using object and attribute annotations from [Visual Genome](http://visualgenome.org/).
 
-py-R-FCN-multiGPU supports multiGPU training of detectors like faster-rcnn and py-R-FCN
+The pretrained model generates output features corresponding to salient image regions. These bottom-up attention features can typically be used as a drop-in replacement for CNN features in attention-based image captioning and visual question answering (VQA) models. This approach was used to achieve state-of-the-art image captioning performance on [MSCOCO](https://competitions.codalab.org/competitions/3221#results) (**CIDEr 117.9**, **BLEU_4 36.9**) and to win the [2017 VQA Challenge](http://www.visualqa.org/workshop.html) (**70.3%** overall accuracy), as described in:
+- [Bottom-Up and Top-Down Attention for Image Captioning and Visual Question Answering](https://arxiv.org/abs/1707.07998), and 
+- [Tips and Tricks for Visual Question Answering: Learnings from the 2017 Challenge](https://arxiv.org/abs/1708.02711). 
 
-## [Soft-NMS](https://github.com/bharatsingh430/soft-nms/) repository gets better results on COCO, so please refer to it.
+Some example object and attribute predictions for salient image regions are illustrated below.
+
+![teaser-bike](data/demo/rcnn_example.png?raw=true)
+![teaser-oven](data/demo/rcnn_example_2.png?raw=true)
+
+### Reference
+If you use our code or features, please cite our paper:
+```
+@article{Anderson2017up-down,
+author = {Peter Anderson and Xiaodong He and Chris Buehler and Damien Teney and Mark Johnson and Stephen Gould and Lei Zhang},
+title = {Bottom-Up and Top-Down Attention for Image Captioning and Visual Question Answering},
+journal = {arXiv preprint arXiv:1707.07998},
+year = {2017}
+}
+```
 
 ### Disclaimer
 
-The official R-FCN code (written in MATLAB) is available [here](https://github.com/daijifeng001/R-FCN).
-
-py-R-FCN is modified from [the offcial R-FCN implementation](https://github.com/daijifeng001/R-FCN) and  [py-faster-rcnn code](https://github.com/rbgirshick/py-faster-rcnn ), and the usage is quite similar to [py-faster-rcnn](https://github.com/rbgirshick/py-faster-rcnn ).
-
-py-R-FCN-multiGPU is a modified version of [py-R-FCN](https://github.com/Orpine/py-R-FCN). I have heavily reused it's README file as it contains most of the necessary information for running this branch.
-
-There are slight differences between py-R-FCN and the official R-FCN implementation.
- - py-R-FCN is ~10% slower at test-time, because some operations execute on the CPU in Python layers (e.g., 90ms / image vs. 99ms / image for ResNet-50)
- - py-R-FCN supports both join training and alternative optimization of R-FCN.
- 
-### Multi-GPU Training R-FCN
-```
-python ./tools/train_net_multi_gpu.py --gpu 0,1 --solver models/pascal_voc/ResNet-101/rfcn_end2end/solver_ohem.prototxt --weights data/imagenet_models/ResNet-101-model.caffemodel  --imdb  voc_2007_trainval+voc_2012_trainval --iters 110000 --cfg experiments/cfgs/rfcn_end2end_ohem.yml
-```
-or
-```
-./experiments/scripts/rfcn_end2end_ohem_multi_gpu.sh 0 pascal_voc
-```
-
-### Multi-GPU Training Faster-RCNN
-```
-./experiments/scripts/faster_rcnn_end2end_multi_gpu.sh 0 VGG16 pascal_voc
-```
-
-This will use 2 GPUs to perform training. I have set iter_size to 1, so in this case, which is using 2 GPUs, results should be similar. Note that as more GPUs are added, batch size will increase, as it happens in the default multiGPU training in Caffe. The GPU_ID flag in the shell script is only used for testing and if you intent to use more GPUs, please edit it inside the script.
-
-#### Some modification
-
-The original py-faster-rcnn uses class-aware bounding box regression. However, R-FCN use class-agnostic bounding box regression to reduce model complexity. So I add a configuration AGNOSTIC into fast_rcnn/config.py, and the default value is False. You should set it to True both on train and test phase if you want to use class-agnostic training and test. 
-
-OHEM need all rois to select the hard examples, so I changed the sample strategy, set `BATCH_SIZE: -1` for OHEM, otherwise OHEM would not take effect.
-
-In conclusion:
-
-`AGNOSTIC: True` is required for class-agnostic bounding box regression
-
-`BATCH_SIZE: -1` is required for OHEM
-
-And I've already provided two configuration files for you(w/ OHEM and w/o OHEM) under `experiments/cfgs` folder, you could just 
-m and needn't change anything.
-
-#### Results on MS-COCO
-
-|                   | training data       | test data          | mAP@[0.5:0.95]   | 
-|-------------------|:-------------------:|:-----------------------------:|:-----:|
-|R-FCN, ResNet-101  | COCO 2014 train+val -minival | COCO 2014 minival    | 30.8% |
-|R-FCN, ResNet-101  | COCO 2014 train+val -minival | COCO 2015 test-dev    | 31.1% |
-
-If you want to use/train this model, please use the coco branch of this repository. The trained model can be found [here](https://drive.google.com/file/d/0B6T5quL13CdHMGtMUWFFSXd2Ym8). Use the config files from the coco branch for this model. Multi-scale training or testing was not done for obtaining this number. Image size was set to 800 and max size was 1200, RPN used 5 scales. This alone obtains 1.6% better than what was reported in the original paper. Training was done on 8 GPUs, with an iter_size of 2.
+This code is modified from [py-R-FCN-multiGPU](https://github.com/bharatsingh430/py-R-FCN-multiGPU), which is in turn modified from [py-faster-rcnn](https://github.com/rbgirshick/py-faster-rcnn) code. Please refer to these links for further README information (for example, relating to other models and datasets included in the repo) and appropriate citations for these works. This README only relates to Faster R-CNN trained on Visual Genome.
 
 ### License
 
-R-FCN is released under the MIT License (refer to the LICENSE file for details).
+bottom-up-attention is released under the MIT License (refer to the LICENSE file for details).
 
-### Citing R-FCN
+### Pretrained features
 
-If you find R-FCN useful in your research, please consider citing:
+For ease-of-use, we make pretrained features available for the entire [MSCOCO dataset](http://mscoco.org/dataset/#download). It is not necessary to clone or build this repo to use features downloaded from the links below. Features are stored in tsv (tab-separated-values) format that can be read with `tools/read_tsv.py`. 
 
-    @article{dai16rfcn,
-        Author = {Jifeng Dai, Yi Li, Kaiming He, Jian Sun},
-        Title = {{R-FCN}: Object Detection via Region-based Fully Convolutional Networks},
-        Journal = {arXiv preprint arXiv:1605.06409},
-        Year = {2016}
-    }
-    
+10 to 100 features per image (adaptive):
+- [2014 Train/Val Image Features (120K / 23GB)](https://storage.googleapis.com/bottom-up-attention/trainval.zip)
+- [2014 Testing Image Features (40K / 7.3GB)](https://storage.googleapis.com/bottom-up-attention/test2014.zip)
+- [2015 Testing Image Features (80K / 15GB)](https://storage.googleapis.com/bottom-up-attention/test2015.zip)
 
+36 features per image (fixed):
+- [2014 Train/Val Image Features (120K / 25GB)](https://storage.googleapis.com/bottom-up-attention/trainval_36.zip)
+- [2014 Testing Image Features (40K / 9GB)](https://storage.googleapis.com/bottom-up-attention/test2014_36.zip)
+- [2015 Testing Image Features (80K / 17GB)](https://storage.googleapis.com/bottom-up-attention/test2015_36.zip)
 
-0. **`Important`** Please use the version of caffe uploaded with this repository. I have merged many files between the latest version of Caffe and py-R-FCN.
+### Contents
+1. [Requirements: software](#requirements-software)
+2. [Requirements: hardware](#requirements-hardware)
+3. [Basic installation](#installation)
+4. [Demo](#demo)
+5. [Training](#training)
+6. [Testing](#testing)
+
+### Requirements: software
+
+0. **`Important`** Please use the version of caffe contained within this repository.
 
 1. Requirements for `Caffe` and `pycaffe` (see: [Caffe installation instructions](http://caffe.berkeleyvision.org/installation.html))
 
-  **Note:** Caffe *must* be built with support for Python layers!
+  **Note:** Caffe *must* be built with support for Python layers and NCCL!
 
   ```make
-  # In your Makefile.config, make sure to have this line uncommented
+  # In your Makefile.config, make sure to have these lines uncommented
   WITH_PYTHON_LAYER := 1
+  USE_NCCL := 1
   # Unrelatedly, it's also recommended that you use CUDNN
   USE_CUDNN := 1
-  USE_NCCL := 1
   ```
 2. Python packages you might not have: `cython`, `python-opencv`, `easydict`
 3. Nvidia's NCCL library which is used for multi-GPU training https://github.com/NVIDIA/nccl
-4. [Optional] MATLAB is required for **official** PASCAL VOC evaluation only. The code now includes unofficial Python evaluation code.
 
 ### Requirements: hardware
 
-Any NVIDIA GPU with 6GB or larger memory is OK(4GB is enough for ResNet-50).
-
+Any NVIDIA GPU with 12GB or larger memory is OK for training Faster R-CNN ResNet-101.
 
 ### Installation
-1. Clone the R-FCN repository
+1. Clone the repository
   ```Shell
-  git clone --recursive https://github.com/bharatsingh430/py-R-FCN-multiGPU/
+  git clone https://github.com/peteanderson80/bottom-up-attention/
   ```
-  (I only test on this commit, and I'm not sure whether this Caffe is still compatible with the prototxt in this repository in the future)
-  
-  If you followed the above instruction, python code will add `$RFCN_ROOT/caffe/python` to `PYTHONPATH` automatically, otherwise you need to add `$CAFFE_ROOT/python` by your own, you could check `$RFCN_ROOT/tools/_init_paths.py` for more details.
 
 3. Build the Cython modules
     ```Shell
-    cd $RFCN_ROOT/lib
+    cd $REPO_ROOT/lib
     make
     ```
 
 4. Build Caffe and pycaffe
     ```Shell
-    cd $RFCN_ROOT/caffe
+    cd $REPO_ROOT/caffe
     # Now follow the Caffe installation instructions here:
     #   http://caffe.berkeleyvision.org/installation.html
 
@@ -125,108 +98,72 @@ Any NVIDIA GPU with 6GB or larger memory is OK(4GB is enough for ResNet-50).
    ```
 
 ### Demo
-1.  To use demo you need to download the pretrained R-FCN model, please download the model manually from [OneDrive](https://1drv.ms/u/s!AoN7vygOjLIQqUWHpY67oaC7mopf), and put it under `$RFCN/data`. 
 
-    Make sure it looks like this:
-    ```Shell
-    $RFCN/data/rfcn_models/resnet50_rfcn_final.caffemodel
-    $RFCN/data/rfcn_models/resnet101_rfcn_final.caffemodel
-    ```
+1.  Download [pretrained model](https://storage.googleapis.com/bottom-up-attention/resnet101_faster_rcnn_final.caffemodel), and put it under `data\faster_rcnn_models`.
+   
+2.  Run `tools/demo.ipynb` to show object and attribute detections on demo images.
 
-2.  To run the demo
+3.  Run `tools/genenerate_tsv.py` to extract bounding box features to a tab-separated-values (tsv) file.
   
+
+### Training
+
+1. Download the Visual Genome dataset. Extract all the json files, as well as the image directories `VG_100K` and `VG_100K_2` into one folder `$VGdata`.
+
+2. Create symlinks for the Visual Genome dataset
+
     ```Shell
-    $RFCN/tools/demo_rfcn.py
+    cd $REPO_ROOT/data
+    ln -s $VGdata vg
+    ``` 
+
+3. Generate xml files for each image in the pascal voc format (this will take some time). This script also does basic cleanup of the visual genome data. The final filtering is done by specifying the dataset vocab in training. E.g. `data/genome/1600-400-20` contains vocabs for 1600 object, 400 attribute and 20 relation classes. The related code for this lives in `lib/datasets`. Relation labels can be included in the data layers but are currently not used.
+
+    ```Shell
+    cd $REPO_ROOT
+    ./data/genome/setup_vg.py
+    ``` 
+
+4.  Please download the ImageNet-pre-trained ResNet-100 model manually, and put it into `$REPO_ROOT/data/imagenet_models`
+
+5.  You can train your own model using `./experiments/scripts/faster_rcnn_end2end_multi_gpu_resnet_final.sh` (see instructions in file). The train (95k) / val (5k) / test (5k) splits are in `data/genome/{split}.txt` and have been determined using `data/genome/create_splits.py`. To avoid val / test set contamination when pre-training for MSCOCO tasks, for images in both datasets these splits match the 'Karpathy' COCO splits. 
+  
+
+    Trained Faster-RCNN snapshots are saved under:
+
     ```
-    
-  The demo performs detection using a ResNet-101 network trained for detection on PASCAL VOC 2007.
-
-
-### Preparation for Training & Testing
-
-1. Download the training, validation, test data and VOCdevkit
-
-	```Shell
-	wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar
-	wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtest_06-Nov-2007.tar
-	wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCdevkit_08-Jun-2007.tar
-	wget http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar
-	```
-
-2. Extract all of these tars into one directory named `VOCdevkit`
-
-	```Shell
-	tar xvf VOCtrainval_06-Nov-2007.tar
-	tar xvf VOCtest_06-Nov-2007.tar
-	tar xvf VOCdevkit_08-Jun-2007.tar
-	tar xvf VOCtrainval_11-May-2012.tar
-	```
-
-3. It should have this basic structure
-
-	```Shell
-  	$VOCdevkit/                           # development kit
-  	$VOCdevkit/VOCcode/                   # VOC utility code
-  	$VOCdevkit/VOC2007                    # image sets, annotations, etc.
-  	$VOCdevkit/VOC2012                    # image sets, annotations, etc.
-  	# ... and several other directories ...
-  	```
-
-4. Since py-faster-rcnn does not support multiple training datasets, we need to merge VOC 2007 data and VOC 2012 data manually. Just make a new directory named `VOC0712`, put all subfolders except `ImageSets` in `VOC2007` and `VOC2012` into `VOC0712`(you'll merge some folders). I provide a merged-version `ImageSets` folder for you, please put it into `VOCdevkit/VOC0712/`.
-
-5. Then the folder structure should look like this
-  ```Shell
-  	$VOCdevkit/                           # development kit
-  	$VOCdevkit/VOCcode/                   # VOC utility code
-  	$VOCdevkit/VOC2007                    # image sets, annotations, etc.
-  	$VOCdevkit/VOC2012                    # image sets, annotations, etc.
-  	$VOCdevkit/VOC0712                    # you just created this folder
-  	# ... and several other directories ...
-  ```
-
-4. Create symlinks for the PASCAL VOC dataset
-
-	```Shell
-    cd $RFCN_ROOT/data
-    ln -s $VOCdevkit VOCdevkit0712
+    output/faster_rcnn_resnet/vg/
     ```
 
-5.  Please download ImageNet-pre-trained ResNet-50 and ResNet-100 model manually, and put them into `$RFCN_ROOT/data/imagenet_models`
-8.  Then everything is done, you could train your own model.
+    Logging outputs are saved under:
 
-### Usage
+    ```
+    experiments/logs/
+    ```
 
-To train and test a R-FCN detector using the **approximate joint training** method, use `experiments/scripts/rfcn_end2end.sh`.
-Output is written underneath `$RFCN_ROOT/output`.
+6.  Run `tools/review_training.ipynb` to visualize the training data and predictions.
 
-To train and test a R-FCN detector using the **approximate joint training** method **with OHEM**, use `experiments/scripts/rfcn_end2end_ohem.sh`.
-Output is written underneath `$RFCN_ROOT/output`.
+### Testing 
 
-To train and test a R-FCN detector using the **alternative optimization** method **with OHEM**, use `experiments/scripts/rfcn_alt_opt_5stage_ohem.sh`.
-Output is written underneath `$RFCN_ROOT/output`
+1.  The model will be tested on the validation set at the end of training, or models can be tested directly using `tools/test_net.py`, e.g.:
 
-```Shell
-cd $RFCN_ROOT
-./experiments/scripts/rfcn_end2end[_ohem].sh [GPU_ID] [NET] [DATASET] [--set ...]
-# GPU_ID is the GPU you want to train on
-# NET in {ResNet-50, ResNet-101} is the network arch to use
-# DATASET in {pascal_voc, coco} is the dataset to use(I only tested on pascal_voc)
-# --set ... allows you to specify fast_rcnn.config options, e.g.
-#   --set EXP_DIR seed_rng1701 RNG_SEED 1701
-```
+    ```
+    ./tools/test_net.py --gpu 0 --imdb vg_1600-400-20_val --def models/vg/ResNet-101/faster_rcnn_end2end_final/test.prototxt --cfg experiments/cfgs/faster_rcnn_end2end_resnet.yml --net data/faster_rcnn_models/resnet101_faster_rcnn_final.caffemodel > experiments/logs/eval.log 2<&1
+    ```
 
-Trained R-FCN networks are saved under:
+    Mean AP is reported separately for object prediction and attibute prediction (given ground-truth object detections). Test outputs are saved under:
 
-```
-output/<experiment directory>/<dataset name>/
-```
+    ```
+    output/faster_rcnn_resnet/vg_1600-400-20_val/<network snapshot name>/
+    ```
 
-Test outputs are saved under:
+#### Expected detection results for the pretrained model
 
-```
-output/<experiment directory>/<dataset name>/<network snapshot name>/
-```
+|                   | objects mAP@0.5     | objects weighted mAP@0.5 | attributes mAP@0.5    | attributes weighted mAP@0.5 |
+|-------------------|:-------------------:|:------------------------:|:---------------------:|:---------------------------:|
+|Faster R-CNN, ResNet-101 | 10.2%  | 15.1% | 7.8%  | 27.8% |
 
-### Misc
 
-Tested on Red Hat with Titan X and Intel Xeon CPU E5-2683 v4 @ 2.10GHz 
+Note that mAP is relatively low because many classes overlap (e.g. person / man / guy), some classes can't be precisely located (e.g. street, field) and separate classes exist for singular and plural objects (e.g. person / people). We focus on performance in downstream tasks (e.g. image captioning, VQA) rather than detection performance. 
+
+

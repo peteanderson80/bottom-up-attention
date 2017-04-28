@@ -13,6 +13,9 @@ Demo script showing detections in sample images.
 See README.md for installation instructions before running.
 """
 
+import matplotlib
+matplotlib.use('Agg')
+
 import _init_paths
 from fast_rcnn.config import cfg
 from fast_rcnn.test import im_detect
@@ -96,6 +99,7 @@ def demo(net, image_name):
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
         vis_detections(im, cls, dets, thresh=CONF_THRESH)
+    plt.savefig(im_file.replace(".jpg", "_demo.jpg"))
 
 def parse_args():
     """Parse input arguments."""

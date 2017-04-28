@@ -43,12 +43,11 @@ TYPED_TEST(EmbedLayerTest, TestSetUp) {
   embed_param->set_input_dim(5);
   shared_ptr<EmbedLayer<Dtype> > layer(new EmbedLayer<Dtype>(layer_param));
   layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
-  ASSERT_EQ(this->blob_top_->num_axes(), 5);
+  ASSERT_EQ(this->blob_top_->num_axes(), 4);
   EXPECT_EQ(this->blob_top_->shape(0), 4);
   EXPECT_EQ(this->blob_top_->shape(1), 1);
   EXPECT_EQ(this->blob_top_->shape(2), 1);
-  EXPECT_EQ(this->blob_top_->shape(3), 1);
-  EXPECT_EQ(this->blob_top_->shape(4), 10);
+  EXPECT_EQ(this->blob_top_->shape(3), 10);
 }
 
 TYPED_TEST(EmbedLayerTest, TestForward) {
@@ -75,16 +74,16 @@ TYPED_TEST(EmbedLayerTest, TestForward) {
   }
   layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
   vector<int> weight_offset(2, 0);
-  vector<int> top_offset(5, 0);
+  vector<int> top_offset(4, 0);
   for (int i = 0; i < this->blob_bottom_->count(); ++i) {
     weight_offset[0] = static_cast<int>(this->blob_bottom_->cpu_data()[i]);
     weight_offset[1] = 0;
     top_offset[0] = i;
-    top_offset[4] = 0;
+    top_offset[3] = 0;
     for (int j = 0; j < kNumOutput; ++j) {
       EXPECT_EQ(layer->blobs()[0]->data_at(weight_offset),
                 this->blob_top_->data_at(top_offset));
-      ++top_offset[4];
+      ++top_offset[3];
       ++weight_offset[1];
     }
   }
@@ -116,18 +115,18 @@ TYPED_TEST(EmbedLayerTest, TestForwardWithBias) {
   layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
   vector<int> bias_offset(1, 0);
   vector<int> weight_offset(2, 0);
-  vector<int> top_offset(5, 0);
+  vector<int> top_offset(4, 0);
   for (int i = 0; i < this->blob_bottom_->count(); ++i) {
     weight_offset[0] = static_cast<int>(this->blob_bottom_->cpu_data()[i]);
     weight_offset[1] = 0;
     top_offset[0] = i;
-    top_offset[4] = 0;
+    top_offset[3] = 0;
     bias_offset[0] = 0;
     for (int j = 0; j < kNumOutput; ++j) {
       EXPECT_FLOAT_EQ(layer->blobs()[0]->data_at(weight_offset) +
                 layer->blobs()[1]->data_at(bias_offset),
                 this->blob_top_->data_at(top_offset));
-      ++top_offset[4];
+      ++top_offset[3];
       ++weight_offset[1];
       ++bias_offset[0];
     }

@@ -18,8 +18,9 @@ class imdb(object):
 
     def __init__(self, name):
         self._name = name
-        self._num_classes = 0
         self._classes = []
+        self._attributes = []
+        self._relations = []
         self._image_index = []
         self._obj_proposer = 'selective_search'
         self._roidb = None
@@ -34,10 +35,26 @@ class imdb(object):
     @property
     def num_classes(self):
         return len(self._classes)
+        
+    @property
+    def num_attributes(self):
+        return len(self._attributes)
+
+    @property
+    def num_relations(self):
+        return len(self._relations)
 
     @property
     def classes(self):
         return self._classes
+        
+    @property
+    def attributes(self):
+        return self._attributes
+
+    @property
+    def relations(self):
+        return self._relations
 
     @property
     def image_index(self):
@@ -57,7 +74,7 @@ class imdb(object):
 
     @property
     def roidb(self):
-        # A roidb is a list of dictionaries, each with the following keys:
+        # A roidb is a list of dictionaries, each with the following keys (at minimum):
         #   boxes
         #   gt_overlaps
         #   gt_classes
@@ -94,6 +111,28 @@ class imdb(object):
         all_boxes[class][image] = [] or np.array of shape #dets x 5
         """
         raise NotImplementedError
+        
+    def evaluate_attributes(self, all_boxes, output_dir=None):
+        """
+        all_boxes is a list of length number-of-classes.
+        Each list element is a list of length number-of-images.
+        Each of those list elements is either an empty list []
+        or a numpy array of detection.
+
+        all_boxes[class][image] = [] or np.array of shape #dets x 5
+        """
+        raise NotImplementedError
+        
+    def evaluate_relations(self, all_boxes, output_dir=None):
+        """
+        all_boxes is a list of length number-of-classes.
+        Each list element is a list of length number-of-images.
+        Each of those list elements is either an empty list []
+        or a numpy array of detection.
+
+        all_boxes[class][image] = [] or np.array of shape #dets x 5
+        """
+        raise NotImplementedError     
 
     def _get_widths(self):
       return [PIL.Image.open(self.image_path_at(i)).size[0]
@@ -101,18 +140,25 @@ class imdb(object):
 
     def append_flipped_images(self):
         num_images = self.num_images
-        widths = self._get_widths()
+        widths = None
         for i in xrange(num_images):
+            entry = self.roidb[i].copy()
+            if 'width' in entry:
+                width = entry['width']
+            else:
+                if not widths:
+                    widths = self._get_widths()
+                width = widths[i]
             boxes = self.roidb[i]['boxes'].copy()
             oldx1 = boxes[:, 0].copy()
             oldx2 = boxes[:, 2].copy()
-            boxes[:, 0] = widths[i] - oldx2 - 1
-            boxes[:, 2] = widths[i] - oldx1 - 1
-            assert (boxes[:, 2] >= boxes[:, 0]).all()
-            entry = {'boxes' : boxes,
-                     'gt_overlaps' : self.roidb[i]['gt_overlaps'],
-                     'gt_classes' : self.roidb[i]['gt_classes'],
-                     'flipped' : True}
+            boxes[:, 0] = width - oldx2 - 1
+            boxes[:, 2] = width - oldx1 - 1
+            assert (boxes[:, 2] >= boxes[:, 0]).all(), \
+                " image %d bounding boxes not positive, width %d:\n %s \n %s" \
+                % (i,width, entry['boxes'],boxes)
+            entry['boxes'] = boxes
+            entry['flipped'] = True
             self.roidb.append(entry)
         self._image_index = self._image_index * 2
 
@@ -246,6 +292,12 @@ class imdb(object):
                                                        b[i]['gt_overlaps']])
             a[i]['seg_areas'] = np.hstack((a[i]['seg_areas'],
                                            b[i]['seg_areas']))
+            if 'gt_attributes' in a[i]:
+              a[i]['gt_attributes'] = scipy.sparse.vstack((a[i]['gt_attributes'],
+                                            b[i]['gt_attributes']))
+            if 'gt_relations' in a[i]:
+              a[i]['gt_relations'] = np.vstack((a[i]['gt_relations'],
+                                            b[i]['gt_relations']))
         return a
 
     def competition_mode(self, on):

@@ -9,6 +9,7 @@
 
 import numpy as np
 import numpy.random as npr
+import scipy.sparse as sparse
 import cv2
 from fast_rcnn.config import cfg
 from utils.blob import prep_im_for_blob, im_list_to_blob
@@ -36,9 +37,32 @@ def get_minibatch(roidb, num_classes):
         assert len(roidb) == 1, "Single batch only"
         # gt boxes: (x1, y1, x2, y2, cls)
         gt_inds = np.where(roidb[0]['gt_classes'] != 0)[0]
-        gt_boxes = np.empty((len(gt_inds), 5), dtype=np.float32)
+        num_gt = len(gt_inds)
+        assert num_gt > 0, "gt must not be empty"
+        if cfg.TRAIN.HAS_ATTRIBUTES:
+            if cfg.TRAIN.HAS_RELATIONS:
+                gt_boxes = np.zeros((num_gt, 21 + num_gt), dtype=np.float32)
+            else:
+                gt_boxes = np.zeros((num_gt, 21), dtype=np.float32)
+        else:
+            gt_boxes = np.zeros((num_gt, 5), dtype=np.float32)
         gt_boxes[:, 0:4] = roidb[0]['boxes'][gt_inds, :] * im_scales[0]
         gt_boxes[:, 4] = roidb[0]['gt_classes'][gt_inds]
+        if cfg.TRAIN.HAS_ATTRIBUTES:
+            gt_boxes[:, 5:21] = roidb[0]['gt_attributes'][gt_inds].toarray()    
+        if cfg.TRAIN.HAS_RELATIONS:
+            assert num_gt == roidb[0]['gt_classes'].shape[0], \
+                  "Generation of gt_relations doesn't accomodate dropping objects"
+            coords = roidb[0]['gt_relations'] # i,relation,j           
+            if coords.size > 0:
+                assert num_gt > coords.max(axis=0)[0], \
+                      "gt_relations subject index exceeds number of objects"
+                assert num_gt > coords.max(axis=0)[2], \
+                      "gt_relations object index exceeds number of objects"
+                np.random.shuffle(coords) # There may be multiple relations between same objects
+                rel_matrix = gt_boxes[:, 21:]
+                for r in range(coords.shape[0]):
+                    rel_matrix[coords[r,0],coords[r,2]] = coords[r,1]
         blobs['gt_boxes'] = gt_boxes
         blobs['im_info'] = np.array(
             [[im_blob.shape[2], im_blob.shape[3], im_scales[0]]],

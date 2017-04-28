@@ -1192,6 +1192,8 @@ message TileParameter {
 
   // The number of copies (tiles) of the blob to output.
   optional int32 tiles = 2;
+  // Determined the number of copies (tiles) from a bottom blob axis.
+  optional int32 tiles_from_axis = 3;
 }
 
 // Message that stores parameters used by ThresholdLayer

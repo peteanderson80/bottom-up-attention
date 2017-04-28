@@ -29,6 +29,9 @@ class EmbedLayer : public Layer<Dtype> {
   virtual inline const char* type() const { return "Embed"; }
   virtual inline int ExactNumBottomBlobs() const { return 1; }
   virtual inline int ExactNumTopBlobs() const { return 1; }
+  virtual inline bool AllowForceBackward(const int bottom_index) const {
+    return false;
+  }
 
  protected:
   virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,

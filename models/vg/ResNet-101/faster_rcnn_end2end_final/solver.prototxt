@@ -1,0 +1,15 @@
+train_net: "models/vg/ResNet-101/faster_rcnn_end2end_final/train.prototxt"
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 350000
+display: 100
+average_loss: 100
+momentum: 0.9
+weight_decay: 0.0005
+# We disable standard caffe solver snapshotting and implement our own snapshot
+# function
+snapshot: 0
+# We still use the snapshot prefix, though
+snapshot_prefix: "resnet101_faster_rcnn_final"
+iter_size: 1

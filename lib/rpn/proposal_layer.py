@@ -14,6 +14,7 @@ from fast_rcnn.bbox_transform import bbox_transform_inv, clip_boxes
 from fast_rcnn.nms_wrapper import nms
 
 DEBUG = False
+DEBUG_SHAPE = False
 
 class ProposalLayer(caffe.Layer):
     """
@@ -158,11 +159,15 @@ class ProposalLayer(caffe.Layer):
         # print blob.shape
         top[0].reshape(*(blob.shape))
         top[0].data[...] = blob
+        if DEBUG_SHAPE:
+            print 'ProposalLayer top[0] size: {}'.format(top[0].data.shape)
 
         # [Optional] output scores blob
         if len(top) > 1:
             top[1].reshape(*(scores.shape))
             top[1].data[...] = scores
+            if DEBUG_SHAPE:
+                print 'ProposalLayer top[0] size: {}'.format(top[0].data.shape)
 
     def backward(self, top, propagate_down, bottom):
         """This layer does not propagate gradients."""

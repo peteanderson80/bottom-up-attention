@@ -130,6 +130,13 @@ __C.TRAIN.RPN_POSITIVE_WEIGHT = -1.0
 # whether use class aware box or not
 __C.TRAIN.AGNOSTIC = False
 
+# Detect attributes of objects
+__C.TRAIN.HAS_ATTRIBUTES = False
+
+# Detect relations between objects
+__C.TRAIN.HAS_RELATIONS = False
+# Fraction of relation minibatch that is labeled with a relation (i.e. class > 0)
+__C.TRAIN.MIN_RELATION_FRACTION = 0.25
 #
 # Testing options
 #
@@ -146,6 +153,10 @@ __C.TEST.MAX_SIZE = 1000
 # Overlap threshold used for non-maximum suppression (suppress boxes with
 # IoU >= this threshold)
 __C.TEST.NMS = 0.3
+
+# Flag for soft-NMS method. 0 performs standard NMS, 1 performs soft-NMS with linear weighting and 
+# 2 performs soft-NMS with Gaussian weighting
+__C.TEST.SOFT_NMS = 0
 
 # Experimental: treat the (K+1) units in the cls_score layer as linear
 # predictors (trained, eg, with one-vs-rest SVMs).
@@ -172,6 +183,11 @@ __C.TEST.RPN_MIN_SIZE = 16
 # whether use class aware box or not
 __C.TEST.AGNOSTIC = False
 
+# Detect attributes of objects
+__C.TEST.HAS_ATTRIBUTES = False
+
+# Detect relations between objects
+__C.TEST.HAS_RELATIONS = False
 
 #
 # MISC
@@ -217,7 +233,7 @@ __C.USE_GPU_NMS = True
 __C.GPU_ID = 0
 
 
-def get_output_dir(imdb, net=None):
+def get_output_dir(imdb, net=None, attributes=False):
     """Return the directory where experimental artifacts are placed.
     If the directory does not exist, it is created.
 
@@ -227,6 +243,8 @@ def get_output_dir(imdb, net=None):
     outdir = osp.abspath(osp.join(__C.ROOT_DIR, 'output', __C.EXP_DIR, imdb.name))
     if net is not None:
         outdir = osp.join(outdir, net.name)
+    if attributes:
+        outdir = osp.join(outdir, "attr")
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     return outdir
