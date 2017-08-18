@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 
-"""Generate bounding-box features as a tsv file. Can use multiple gpus, each produces a 
+"""Generate bottom-up attention features as a tsv file. Can use multiple gpus, each produces a 
    separate tsv file that can be merged later (e.g. by using merge_tsv function). 
    Modify the load_image_ids script as necessary for your data location. """
 
 
 # Example:
-# ./tools/generate_tsv.py --gpu 0,1,2,3,4,5,6,7 --cfg experiments/cfgs/faster_rcnn_end2end_resnet.yml --def models/vg/ResNet-101/faster_rcnn_end2end/test.prototxt --out /data/tsv/resnet101_faster_rcnn_final.tsv --net data/faster_rcnn_models/resnet101_faster_rcnn_final.caffemodel --split test2014
+# ./tools/generate_tsv.py --gpu 0,1,2,3,4,5,6,7 --cfg experiments/cfgs/faster_rcnn_end2end_resnet.yml --def models/vg/ResNet-101/faster_rcnn_end2end/test.prototxt --out test2014_resnet101_faster_rcnn_genome.tsv --net data/faster_rcnn_models/resnet101_faster_rcnn_final.caffemodel --split coco_test2014
 
 
 import _init_paths
@@ -33,18 +33,23 @@ csv.field_size_limit(sys.maxsize)
 
 FIELDNAMES = ['image_id', 'image_w','image_h','num_boxes', 'boxes', 'features']
 
+# Settings for the number of features per image. To re-create pretrained features with 36 features
+# per image, set both values to 36. 
+MIN_BOXES = 10
+MAX_BOXES = 100
+
 def load_image_ids(split_name):
     ''' Load a list of (path,image_id tuples). Modify this to suit your data locations. '''
     split = []
     if split_name == 'coco_test2014':
-      with open('/data/image_info_test2014/annotations/image_info_test2014.json') as f:
+      with open('/data/coco/annotations/image_info_test2014.json') as f:
         data = json.load(f)
         for item in data['images']:
           image_id = int(item['id'])
           filepath = os.path.join('/data/test2014/', item['file_name'])
           split.append((filepath,image_id))
     elif split_name == 'coco_test2015':
-      with open('/data/image_info_test2015/annotations/image_info_test2015.json') as f:
+      with open('/data/coco/annotations/image_info_test2015.json') as f:
         data = json.load(f)
         for item in data['images']:
           image_id = int(item['id'])
@@ -61,7 +66,7 @@ def load_image_ids(split_name):
     return split
 
     
-def get_detections_from_im(net, im_file, image_id, conf_thresh=0.4, min_boxes=36, max_boxes=36):
+def get_detections_from_im(net, im_file, image_id, conf_thresh=0.2):
 
     im = cv2.imread(im_file)
     scores, boxes, attr_scores, rel_scores = im_detect(net, im)
@@ -84,10 +89,10 @@ def get_detections_from_im(net, im_file, image_id, conf_thresh=0.4, min_boxes=36
         max_conf[keep] = np.where(cls_scores[keep] > max_conf[keep], cls_scores[keep], max_conf[keep])
 
     keep_boxes = np.where(max_conf >= conf_thresh)[0]
-    if len(keep_boxes) < min_boxes:
-        keep_boxes = np.argsort(max_conf)[::-1][:min_boxes]
-    elif len(keep_boxes) > max_boxes:
-        keep_boxes = np.argsort(max_conf)[::-1][:max_boxes]
+    if len(keep_boxes) < MIN_BOXES:
+        keep_boxes = np.argsort(max_conf)[::-1][:MIN_BOXES]
+    elif len(keep_boxes) > MAX_BOXES:
+        keep_boxes = np.argsort(max_conf)[::-1][:MAX_BOXES]
    
     return {
         'image_id': image_id,
