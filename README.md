@@ -11,6 +11,8 @@ Some example object and attribute predictions for salient image regions are illu
 ![teaser-bike](data/demo/rcnn_example.png?raw=true)
 ![teaser-oven](data/demo/rcnn_example_2.png?raw=true)
 
+Note: This repo only includes code for training the bottom-up attention / Faster R-CNN model (section 3.1 of the [paper](https://arxiv.org/abs/1707.07998)). The actual captioning model (section 3.2) is available in a separate repo [here](https://github.com/peteanderson80/Up-Down-Captioner). 
+
 ### Reference
 If you use our code or features, please cite our paper:
 ```
