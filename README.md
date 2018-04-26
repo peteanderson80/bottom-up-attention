@@ -16,11 +16,11 @@ Note: This repo only includes code for training the bottom-up attention / Faster
 ### Reference
 If you use our code or features, please cite our paper:
 ```
-@article{Anderson2017up-down,
-author = {Peter Anderson and Xiaodong He and Chris Buehler and Damien Teney and Mark Johnson and Stephen Gould and Lei Zhang},
-title = {Bottom-Up and Top-Down Attention for Image Captioning and Visual Question Answering},
-journal = {arXiv preprint arXiv:1707.07998},
-year = {2017}
+@inproceedings{Anderson2017up-down,
+  author = {Peter Anderson and Xiaodong He and Chris Buehler and Damien Teney and Mark Johnson and Stephen Gould and Lei Zhang},
+  title = {Bottom-Up and Top-Down Attention for Image Captioning and Visual Question Answering},
+  booktitle={CVPR},
+  year = {2018}
 }
 ```
 
