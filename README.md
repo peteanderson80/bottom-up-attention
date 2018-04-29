@@ -34,17 +34,17 @@ bottom-up-attention is released under the MIT License (refer to the LICENSE file
 
 ### Pretrained features
 
-For ease-of-use, we make pretrained features available for the entire [MSCOCO dataset](http://mscoco.org/dataset/#download). It is not necessary to clone or build this repo to use features downloaded from the links below. Features are stored in tsv (tab-separated-values) format that can be read with `tools/read_tsv.py`. 
+For ease-of-use, we make pretrained features available for the entire [MSCOCO dataset](http://mscoco.org/dataset/#download). It is not necessary to clone or build this repo to use features downloaded from [this link](https://1drv.ms/f/s!AsQPov4_i5H0gTp7lTO8HaG5GmIs). Features are stored in tsv (tab-separated-values) format that can be read with `tools/read_tsv.py`. The file names are listed below, although some files have been broken into multiple splits with suffixes `.001` etc. 
 
 10 to 100 features per image (adaptive):
-- [2014 Train/Val Image Features (120K / 23GB)](https://storage.googleapis.com/bottom-up-attention/trainval.zip)
-- [2014 Testing Image Features (40K / 7.3GB)](https://storage.googleapis.com/bottom-up-attention/test2014.zip)
-- [2015 Testing Image Features (80K / 15GB)](https://storage.googleapis.com/bottom-up-attention/test2015.zip)
+- 2014 Train/Val Image Features (120K / 23GB)
+- 2014 Testing Image Features (40K / 7.3GB)
+- 2015 Testing Image Features (80K / 15GB)
 
 36 features per image (fixed):
-- [2014 Train/Val Image Features (120K / 25GB)](https://storage.googleapis.com/bottom-up-attention/trainval_36.zip)
-- [2014 Testing Image Features (40K / 9GB)](https://storage.googleapis.com/bottom-up-attention/test2014_36.zip)
-- [2015 Testing Image Features (80K / 17GB)](https://storage.googleapis.com/bottom-up-attention/test2015_36.zip)
+- 2014 Train/Val Image Features (120K / 25GB)
+- 2014 Testing Image Features (40K / 9GB)
+- 2015 Testing Image Features (80K / 17GB)
 
 Both sets of features can be recreated by using `tools/genenerate_tsv.py` with the appropriate pretrained model and with MIN_BOXES/MAX_BOXES set to either 10/100 or 36/36 respectively - refer [Demo](#demo). 
 
@@ -121,7 +121,7 @@ Any NVIDIA GPU with 12GB or larger memory is OK for training Faster R-CNN ResNet
     ln -s $VGdata vg
     ``` 
 
-3. Generate xml files for each image in the pascal voc format (this will take some time). This script also does basic cleanup of the visual genome data. The final filtering is done by specifying the dataset vocab in training. E.g. `data/genome/1600-400-20` contains vocabs for 1600 object, 400 attribute and 20 relation classes. The related code for this lives in `lib/datasets`. Relation labels can be included in the data layers but are currently not used.
+3. Generate xml files for each image in the pascal voc format (this will take some time). This script will extract the top 2500/1000/500 objects/attributes/relations and also does basic cleanup of the visual genome data. Note however, that our training code actually only uses a subset of the annotations in the xml files, i.e., only 1600 object classes and 400 attribute classes, based on the hand-filtered vocabs found in `data/genome/1600-400-20`. The relevant part of the codebase is `lib/datasets/vg.py`. Relation labels can be included in the data layers but are currently not used.
 
     ```Shell
     cd $REPO_ROOT
