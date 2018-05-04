@@ -34,17 +34,19 @@ bottom-up-attention is released under the MIT License (refer to the LICENSE file
 
 ### Pretrained features
 
-For ease-of-use, we make pretrained features available for the entire [MSCOCO dataset](http://mscoco.org/dataset/#download). It is not necessary to clone or build this repo to use features downloaded from [this link](https://1drv.ms/f/s!AsQPov4_i5H0gTp7lTO8HaG5GmIs). Features are stored in tsv (tab-separated-values) format that can be read with `tools/read_tsv.py`. The file names are listed below, although some files have been broken into multiple splits with suffixes `.001` etc. 
+For ease-of-use, we make pretrained features available for the entire [MSCOCO dataset](http://mscoco.org/dataset/#download). It is not necessary to clone or build this repo to use features downloaded from the links below. Features are stored in tsv (tab-separated-values) format that can be read with `tools/read_tsv.py`. 
+
+**LINKS HAVE BEEN UPDATED**
 
 10 to 100 features per image (adaptive):
-- 2014 Train/Val Image Features (120K / 23GB)
-- 2014 Testing Image Features (40K / 7.3GB)
-- 2015 Testing Image Features (80K / 15GB)
+- [2014 Train/Val Image Features (120K / 23GB)](https://imagecaption.blob.core.windows.net/imagecaption/trainval.zip)
+- [2014 Testing Image Features (40K / 7.3GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2014.zip)
+- [2015 Testing Image Features (80K / 15GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2015.zip)
 
 36 features per image (fixed):
-- 2014 Train/Val Image Features (120K / 25GB)
-- 2014 Testing Image Features (40K / 9GB)
-- 2015 Testing Image Features (80K / 17GB)
+- [2014 Train/Val Image Features (120K / 25GB)](https://imagecaption.blob.core.windows.net/imagecaption/trainval_36.zip)
+- [2014 Testing Image Features (40K / 9GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2014_36.zip)
+- [2015 Testing Image Features (80K / 17GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2015_36.zip)
 
 Both sets of features can be recreated by using `tools/genenerate_tsv.py` with the appropriate pretrained model and with MIN_BOXES/MAX_BOXES set to either 10/100 or 36/36 respectively - refer [Demo](#demo). 
 
