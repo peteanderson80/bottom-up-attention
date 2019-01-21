@@ -48,7 +48,7 @@ For ease-of-use, we make pretrained features available for the entire [MSCOCO da
 - [2014 Testing Image Features (40K / 9GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2014_36.zip)
 - [2015 Testing Image Features (80K / 17GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2015_36.zip)
 
-Both sets of features can be recreated by using `tools/genenerate_tsv.py` with the appropriate pretrained model and with MIN_BOXES/MAX_BOXES set to either 10/100 or 36/36 respectively - refer [Demo](#demo). 
+Both sets of features can be recreated by using `tools/generate_tsv.py` with the appropriate pretrained model and with MIN_BOXES/MAX_BOXES set to either 10/100 or 36/36 respectively - refer [Demo](#demo). 
 
 ### Contents
 1. [Requirements: software](#requirements-software)
@@ -109,7 +109,7 @@ Any NVIDIA GPU with 12GB or larger memory is OK for training Faster R-CNN ResNet
    
 2.  Run `tools/demo.ipynb` to show object and attribute detections on demo images.
 
-3.  Run `tools/genenerate_tsv.py` to extract bounding box features to a tab-separated-values (tsv) file. This will require modifying the `load_image_ids` function to suit your data locations. To recreate the pretrained feature files with 10 to 100 features per image, set MIN_BOXES=10 and MAX_BOXES=100. To recreate the pretrained feature files with 36 features per image, set MIN_BOXES=36 and MAX_BOXES=36 use this [alternative pretrained model](https://storage.googleapis.com/bottom-up-attention/resnet101_faster_rcnn_final_iter_320000.caffemodel) instead. The alternative pretrained model was trained for fewer iterations but performance is similar.
+3.  Run `tools/generate_tsv.py` to extract bounding box features to a tab-separated-values (tsv) file. This will require modifying the `load_image_ids` function to suit your data locations. To recreate the pretrained feature files with 10 to 100 features per image, set MIN_BOXES=10 and MAX_BOXES=100. To recreate the pretrained feature files with 36 features per image, set MIN_BOXES=36 and MAX_BOXES=36 use this [alternative pretrained model](https://storage.googleapis.com/bottom-up-attention/resnet101_faster_rcnn_final_iter_320000.caffemodel) instead. The alternative pretrained model was trained for fewer iterations but performance is similar.
   
 
 ### Training
