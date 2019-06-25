@@ -49,16 +49,16 @@ For ease-of-use, we make pretrained features available for the entire [MSCOCO da
 - [2015 Testing Image Features (80K / 17GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2015_36.zip)
 
 
-If the above links are too slow, the features can be downloaded from Google Cloud Storage at own cost using the Requester Pays feature. Use the following gsutil commands where [PROJECT_ID] is your Cloud Storage project id that should be billed (further documentation can be found [here](https://cloud.google.com/storage/docs/using-requester-pays):
+If the above links are too slow, the features can be downloaded from Google Cloud Storage at own cost using the Requester Pays feature. Use the following gsutil commands where [PROJECT_ID] is your Cloud Storage project id that should be billed (further documentation can be found [here](https://cloud.google.com/storage/docs/using-requester-pays)):
 
-10 to 100 features per image (adaptive):	10 to 100 features per image (adaptive):
+10 to 100 features per image (adaptive):
 ```
 gsutil -u [PROJECT_ID] cp gs://bottom-up-attention/trainval.zip [OBJECT_DESTINATION] # 2014 Train/Val Image Features (120K / 23GB)
 gsutil -u [PROJECT_ID] cp gs://bottom-up-attention/test2014.zip [OBJECT_DESTINATION] # 2014 Testing Image Features (40K / 7.3GB)
 gsutil -u [PROJECT_ID] cp gs://bottom-up-attention/test2015.zip [OBJECT_DESTINATION] # 2015 Testing Image Features (80K / 15GB)
 ```
 
-36 features per image (fixed):	36 features per image (fixed):
+36 features per image (fixed):
 ```
 gsutil -u [PROJECT_ID] cp gs://bottom-up-attention/trainval_36.zip [OBJECT_DESTINATION] # 2014 Train/Val Image Features (120K / 25GB)
 gsutil -u [PROJECT_ID] cp gs://bottom-up-attention/test2014_36.zip [OBJECT_DESTINATION] # 2014 Testing Image Features (40K / 9GB)
