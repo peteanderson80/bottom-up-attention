@@ -36,17 +36,17 @@ bottom-up-attention is released under the MIT License (refer to the LICENSE file
 
 For ease-of-use, we make pretrained features available for the entire [MSCOCO dataset](http://mscoco.org/dataset/#download). It is not necessary to clone or build this repo to use features downloaded from the links below. Features are stored in tsv (tab-separated-values) format that can be read with `tools/read_tsv.py`. 
 
-**LINKS HAVE BEEN UPDATED**
+**LINKS HAVE BEEN UPDATED TO GOOGLE CLOUD STORAGE (14 Feb 2021)**
 
 10 to 100 features per image (adaptive):
-- [2014 Train/Val Image Features (120K / 23GB)](https://imagecaption.blob.core.windows.net/imagecaption/trainval.zip)
-- [2014 Testing Image Features (40K / 7.3GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2014.zip)
-- [2015 Testing Image Features (80K / 15GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2015.zip)
+- [2014 Train/Val Image Features (120K / 23GB)](https://storage.googleapis.com/up-down-attention/trainval.zip)
+- [2014 Testing Image Features (40K / 7.3GB)](https://storage.googleapis.com/up-down-attention/test2014.zip)
+- [2015 Testing Image Features (80K / 15GB)](https://storage.googleapis.com/up-down-attention/test2015.zip)
 
 36 features per image (fixed):
-- [2014 Train/Val Image Features (120K / 25GB)](https://imagecaption.blob.core.windows.net/imagecaption/trainval_36.zip)
-- [2014 Testing Image Features (40K / 9GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2014_36.zip)
-- [2015 Testing Image Features (80K / 17GB)](https://imagecaption.blob.core.windows.net/imagecaption/test2015_36.zip)
+- [2014 Train/Val Image Features (120K / 25GB)](https://storage.googleapis.com/up-down-attention/trainval_36.zip)
+- [2014 Testing Image Features (40K / 9GB)](https://storage.googleapis.com/up-down-attention/test2014_36.zip)
+- [2015 Testing Image Features (80K / 17GB)](https://storage.googleapis.com/up-down-attention/test2015_36.zip)
 
 Both sets of features can be recreated by using `tools/genenerate_tsv.py` with the appropriate pretrained model and with MIN_BOXES/MAX_BOXES set to either 10/100 or 36/36 respectively - refer [Demo](#demo). 
 
@@ -105,12 +105,11 @@ Any NVIDIA GPU with 12GB or larger memory is OK for training Faster R-CNN ResNet
 
 ### Demo
 
-1.  Download [pretrained model](https://storage.googleapis.com/bottom-up-attention/resnet101_faster_rcnn_final.caffemodel), and put it under `data\faster_rcnn_models`.
+1.  Download [pretrained model](https://storage.googleapis.com/up-down-attention/resnet101_faster_rcnn_final.caffemodel), and put it under `data\faster_rcnn_models`.
    
 2.  Run `tools/demo.ipynb` to show object and attribute detections on demo images.
 
-3.  Run `tools/generate_tsv.py` to extract bounding box features to a tab-separated-values (tsv) file. This will require modifying the `load_image_ids` function to suit your data locations. To recreate the pretrained feature files with 10 to 100 features per image, set MIN_BOXES=10 and MAX_BOXES=100. To recreate the pretrained feature files with 36 features per image, set MIN_BOXES=36 and MAX_BOXES=36 use this [alternative pretrained model](https://storage.googleapis.com/bottom-up-attention/resnet101_faster_rcnn_final_iter_320000.caffemodel) instead. The alternative pretrained model was trained for fewer iterations but performance is similar.
-  
+3.  Run `tools/generate_tsv.py` to extract bounding box features to a tab-separated-values (tsv) file. This will require modifying the `load_image_ids` function to suit your data locations. To recreate the pretrained feature files with 10 to 100 features per image, set MIN_BOXES=10 and MAX_BOXES=100. To recreate the pretrained feature files with 36 features per image, set MIN_BOXES=36 and MAX_BOXES=36 use this [alternative pretrained model](https://storage.googleapis.com/bottom-up-attention/resnet101_faster_rcnn_final_iter_320000.caffemodel) instead. The alternative pretrained model was trained for fewer iterations but performance is similar.  
 
 ### Training
 
