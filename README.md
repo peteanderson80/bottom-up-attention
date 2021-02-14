@@ -109,8 +109,7 @@ Any NVIDIA GPU with 12GB or larger memory is OK for training Faster R-CNN ResNet
    
 2.  Run `tools/demo.ipynb` to show object and attribute detections on demo images.
 
-3.  Run `tools/genenerate_tsv.py` to extract bounding box features to a tab-separated-values (tsv) file. This will require modifying the `load_image_ids` function to suit your data locations. To recreate the pretrained feature files with 10 to 100 features per image, set MIN_BOXES=10 and MAX_BOXES=100. To recreate the pretrained feature files with 36 features per image, set MIN_BOXES=36 and MAX_BOXES=36 use this [alternative pretrained model](https://storage.googleapis.com/up-down-attention/resnet101_faster_rcnn_final_iter_320000.caffemodel) instead. The alternative pretrained model was trained for fewer iterations but performance is similar.
-  
+3.  Run `tools/generate_tsv.py` to extract bounding box features to a tab-separated-values (tsv) file. This will require modifying the `load_image_ids` function to suit your data locations. To recreate the pretrained feature files with 10 to 100 features per image, set MIN_BOXES=10 and MAX_BOXES=100. To recreate the pretrained feature files with 36 features per image, set MIN_BOXES=36 and MAX_BOXES=36 use this [alternative pretrained model](https://storage.googleapis.com/bottom-up-attention/resnet101_faster_rcnn_final_iter_320000.caffemodel) instead. The alternative pretrained model was trained for fewer iterations but performance is similar.  
 
 ### Training
 
