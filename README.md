@@ -48,7 +48,7 @@ For ease-of-use, we make pretrained features available for the entire [MSCOCO da
 - [2014 Testing Image Features (40K / 9GB)](https://storage.googleapis.com/up-down-attention/test2014_36.zip)
 - [2015 Testing Image Features (80K / 17GB)](https://storage.googleapis.com/up-down-attention/test2015_36.zip)
 
-Both sets of features can be recreated by using `tools/genenerate_tsv.py` with the appropriate pretrained model and with MIN_BOXES/MAX_BOXES set to either 10/100 or 36/36 respectively - refer [Demo](#demo). 
+Both sets of features can be recreated by using `tools/generate_tsv.py` with the appropriate pretrained model and with MIN_BOXES/MAX_BOXES set to either 10/100 or 36/36 respectively - refer [Demo](#demo). 
 
 ### Contents
 1. [Requirements: software](#requirements-software)
